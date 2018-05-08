@@ -30,7 +30,9 @@ cd "$(dirname "$0")"/..
 
 if [[ ! -z "$CONFLUENCE_VERSION" ]]
 then
-    eval "docker build -t confluence-4-testing:$CONFLUENCE_VERSION ."
+    COMMAND="docker build -t confluence-4-testing:$CONFLUENCE_VERSION --build-arg CONFLUENCE_VERSION=$CONFLUENCE_VERSION ."
 else
-    docker build -t confluence-4-testing .
+    COMMAND="docker build -t confluence-4-testing ."
 fi
+
+eval $COMMAND
