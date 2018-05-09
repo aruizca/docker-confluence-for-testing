@@ -20,11 +20,12 @@ WORKDIR $CONFLUENCE_HOME
 
 COPY entrypoint.sh /entrypoint.sh
 
-RUN [ -z "${CONFLUENCE_VERSION}" ] || export CONFLUENCE_VERSION="$(curl -s https://marketplace.atlassian.com/rest/2/applications/confluence/versions/latest | jq '.version')" \
+RUN [ -n "${CONFLUENCE_VERSION}" ] || export CONFLUENCE_VERSION=$(curl -s https://marketplace.atlassian.com/rest/2/applications/confluence/versions/latest | jq -r '.version') \
     && echo "${CONFLUENCE_VERSION}" \
     && export DOWNLOAD_URL="http://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-${CONFLUENCE_VERSION}.tar.gz" \
+    && echo "${DOWNLOAD_URL}" \
     && mkdir -p                          ${CONFLUENCE_INSTALL_DIR} \
-    && curl -L --silent                  ${DOWNLOAD_URL} | tar -xz --strip-components=1 -C "$CONFLUENCE_INSTALL_DIR" \
+    && curl -L                           ${DOWNLOAD_URL} | tar -xz --strip-components=1 -C "$CONFLUENCE_INSTALL_DIR" \
     && sed -i -e 's/-Xms\([0-9]\+[kmg]\) -Xmx\([0-9]\+[kmg]\)/-Xms\${JVM_MINIMUM_MEMORY:=\1} -Xmx\${JVM_MAXIMUM_MEMORY:=\2} \${JVM_SUPPORT_RECOMMENDED_ARGS} -Dconfluence.home=\${CONFLUENCE_HOME}/g' ${CONFLUENCE_INSTALL_DIR}/bin/setenv.sh \
     && sed -i -e 's/port="8090"/port="8090" secure="${catalinaConnectorSecure}" scheme="${catalinaConnectorScheme}" proxyName="${catalinaConnectorProxyName}" proxyPort="${catalinaConnectorProxyPort}"/' ${CONFLUENCE_INSTALL_DIR}/conf/server.xml
 
