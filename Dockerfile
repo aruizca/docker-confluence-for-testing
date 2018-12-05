@@ -8,8 +8,7 @@ ENV CONFLUENCE_INSTALL_DIR   /opt/atlassian/confluence
 ARG CONFLUENCE_VERSION
 
 # Expose HTTP and Synchrony ports
-EXPOSE 8090
-EXPOSE 8091
+EXPOSE 8090 8091 5005
 
 RUN apk update -qq \
     && apk add ca-certificates wget curl openssh bash procps openssl perl ttf-dejavu jq \

@@ -1,0 +1,41 @@
+version: "3"
+services:
+  confluence:
+    container_name: confluence
+    hostname: confluence
+    image: confluence-4-testing:6.6.10
+    ports:
+      - "8090:8090"
+      - "8091:8091"
+      - "5005:5005"
+    depends_on:
+      - ldap
+      - postgres
+    networks:
+      - confluence-net
+
+  postgres:
+    image: postgres:9.4
+    container_name: postgres
+    hostname: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - confluence-net
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=confluence
+
+  ldap:
+    image: rroemhild/test-openldap
+    container_name: ldap
+    hostname: ldap
+    privileged: true
+    ports:
+      - "389:389"
+    networks:
+      - confluence-net
+
+networks:
+  confluence-net:
+    driver: bridge
