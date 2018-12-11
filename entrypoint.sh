@@ -16,6 +16,7 @@ CATALINA_OPTS="${CATALINA_OPTS} -DcatalinaConnectorSecure=${CATALINA_CONNECTOR_S
 CATALINA_OPTS="${CATALINA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
 hostname=$(eval hostname)
 CATALINA_OPTS="${CATALINA_OPTS} -Dsynchrony.host=${hostname}"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcomalatech.workflow.approval.minquery=3"
 
 export CATALINA_OPTS
 echo "CATALINA_OPTS=$CATALINA_OPTS"

@@ -3,7 +3,7 @@ services:
   confluence:
     container_name: confluence
     hostname: confluence
-    image: confluence-4-testing:6.6.10
+    image: confluence-4-testing:5.10.9
     ports:
       - "8090:8090"
       - "8091:8091"
