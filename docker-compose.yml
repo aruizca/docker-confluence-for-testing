@@ -7,7 +7,7 @@ services:
     ports:
       - "8090:8090"
       - "8091:8091"
-      - "5005:5005"
+      - "5006:5005"
     depends_on:
       - ldap
       - postgres
