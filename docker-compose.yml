@@ -3,6 +3,7 @@ services:
   confluence:
     container_name: confluence
     hostname: confluence
+    image: confluence-4-testing:${CONFLUENCE_VERSION}
     build:
       context: .
       args:
