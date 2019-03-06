@@ -1,14 +1,18 @@
-FROM anapsix/alpine-java
-LABEL MAINTAINER="@aruizca - Angel Ruiz"
+FROM ubuntu:18.04
+LABEL MAINTAINER @aruizca - Angel Ruiz
 
 # Install some utilse
-RUN apk update \
- && apk add ca-certificates \
- && apk add jq \
- && apk add curl \
- && apk add ttf-dejavu \
- && update-ca-certificates \
- && rm -rf /var/cache/apk/
+RUN apt-get update \
+&& apt-get install -yq wget curl bash jq ttf-dejavu ca-certificates \
+&& update-ca-certificates \
+&& rm -rf /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
+
+# Use jabba JVM Manger to install Oracle JRE 1.8
+RUN curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | \
+    JABBA_COMMAND="install sjre@1.8 -o /jre" bash
+
+ENV JAVA_HOME /jre
+ENV PATH $JAVA_HOME/bin:$PATH
 
 # https://confluence.atlassian.com/doc/confluence-home-and-other-important-directories-590259707.html
 ENV CONFLUENCE_HOME          /var/atlassian/application-data/confluence
