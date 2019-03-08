@@ -3,11 +3,15 @@ services:
   confluence:
     container_name: confluence
     hostname: confluence
-    image: confluence-4-testing:5.10.9
+    image: confluence-4-testing:${CONFLUENCE_VERSION}
+    build:
+      context: .
+      args:
+          CONFLUENCE_VERSION: ${CONFLUENCE_VERSION}
     ports:
       - "8090:8090"
       - "8091:8091"
-      - "5006:5005"
+      - "${DEBUG_PORT}:5005"
     depends_on:
       - ldap
       - postgres

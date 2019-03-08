@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-MAINTAINER @aruizca - Angel Ruiz
+LABEL MAINTAINER @aruizca - Angel Ruiz
 
 # Install some utilse
 RUN apt-get update \
