@@ -1,9 +1,47 @@
-# docker-confluence-for-testing
+This README is still WIP
+---
+
+ docker-confluence-for-testing
 Docker image to run Atlassian Confluence using an Oracle JRE
 
 # Overview
  
 This Docker container makes it easy to get an instance of Confluence up and running.
+
+# Main Usage
+
+```bash
+./scripts/run-confluence-container.sh [x.y.z]
+
+```
+x.y.z is an optional parameter with the Confluence version number you want to run.
+
+Otherwise the default version that appears on the .env file will be used.
+
+
+## Additional settings
+
+```
+./scripts/run-confluence-container.sh [x.y.z] [ENV=VALUE ENV2=VALUE]
+```
+
+### Debugging port
+```
+DEBUG_PORT=5006
+```
+
+### Change container localization and timezone
+ ```
+ TZ=America/Los_Angeles
+ LC_ALL=en_US.UTF-8
+ LANG=en_US.UTF-8
+ LANGUAGE=en_US.UTF-8
+ ```
+
+--------
+--------
+### From here the documentation needs to be updated to reflect some of the changes made
+
  
 # Quick Start
  
