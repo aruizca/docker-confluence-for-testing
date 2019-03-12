@@ -18,6 +18,8 @@ x.y.z is an optional parameter with the Confluence version number you want to ru
 
 Otherwise the default version that appears on the .env file will be used.
 
+Confluence instance will be listening on http://localhost:8090/confluence
+
 
 ## Additional settings
 
