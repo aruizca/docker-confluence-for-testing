@@ -14,41 +14,37 @@ function usage
     echo "  -h | --help                   : This message";
 }
 
-# Parses command line parameters, but also sets de AWS_PROFILE globally (by exporting it).
-# This way, all the upcoming calls to the awscli will be using the selected profile 
-function parse_args
-{
-    # positional args
-    args=()
-    
-    # named args
-    while [ "$1" != "" ]; do
-        case "$1" in
-            [0123456789]*)
-                CONFLUENCE_VERSION=$1
-                shift 1;;
-            -h | --help )    usage;                                      exit;; # quit and show usage
-            * )              args+=("$1")                                # if no match, add it to the positional args
-        esac
-        shift # move to next kv pair
-    done
-    
-    # restore positional args
-    set -- "${args[@]}"
-    shift 1
-}
+# By default we ignore the first argument
+args="${@:2}"
+
+case "$1" in
+    [0123456789]* )
+        CONFLUENCE_VERSION=$1
+        echo "whatever"
+        shift 1;;
+    -h | --help )
+        usage;
+        exit;; # quit and show usage
+    * )
+        # If none the above then the first argument is an environment variable
+        args="${@:1}"
+esac
+
 # Set current folder to parent
 cd "$(dirname "$0")"/..
 
-if [[ ! -z "$CONFLUENCE_VERSION" ]]
+if [[ ! -z "${CONFLUENCE_VERSION}" ]]
 then
-    export CONFLUENCE_VERSION=$CONFLUENCE_VERSION
+    export CONFLUENCE_VERSION=${CONFLUENCE_VERSION}
 fi
 
-for env_variable in $@
+for env_variable in ${args}
 do
  export ${env_variable}
- echo "set ${env_variable}"
+ echo "set environment variable -> ${env_variable}"
 done
+
+echo "Starting Confluence version $CONFLUENCE_VERSION"
+echo "---------------------------------"
 
 docker-compose up confluence
