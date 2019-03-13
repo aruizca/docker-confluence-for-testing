@@ -8,6 +8,11 @@ services:
       context: .
       args:
           CONFLUENCE_VERSION: ${CONFLUENCE_VERSION}
+    environment:
+      - TZ
+      - LC_ALL
+      - LANG
+      - LANGUAGE
     ports:
       - "8090:8090"
       - "8091:8091"
@@ -22,13 +27,13 @@ services:
     image: postgres:9.4
     container_name: postgres
     hostname: postgres
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=confluence
     ports:
       - "5432:5432"
     networks:
       - confluence-net
-    environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=confluence
 
   ldap:
     image: rroemhild/test-openldap
