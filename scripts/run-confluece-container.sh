@@ -20,7 +20,6 @@ args="${@:2}"
 case "$1" in
     [0123456789]* )
         CONFLUENCE_VERSION=$1
-        echo "whatever"
         shift 1;;
     -h | --help )
         usage;
