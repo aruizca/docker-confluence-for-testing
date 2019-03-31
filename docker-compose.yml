@@ -24,7 +24,7 @@ services:
       - confluence-net
 
   postgres:
-    image: postgres:9.5
+    image: postgres:${POSTGRESQL_VERSION}
     container_name: postgres
     hostname: postgres
     environment:
