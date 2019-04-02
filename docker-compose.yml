@@ -36,7 +36,7 @@ services:
       - confluence-net
 
   ldap:
-    image: rroemhild/test-openldap
+    image: aruizca/confluence-test-ldap
     container_name: ldap
     hostname: ldap
     privileged: true

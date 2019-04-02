@@ -75,6 +75,13 @@ You can use any of the versions available in [the official PostgreSQL Docker rep
 | 6.0.x - ... | 9.6 | 
 
 
+## External user directory
+Most companies use an external directory services to manage users authentication and authorization. To test that scenario I have forked and customized a [Docker image with OpenLDAP in this repository](https://github.com/aruizca/docker-test-openldap), so it can be used out of the box for that purpose.
+
+A container using this image will be run along with Confluence and available if needed.
+
+That repo contains also the setting to configure it inside Confluence.
+
  
  
 
