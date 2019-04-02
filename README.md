@@ -60,13 +60,22 @@ By default a container named "postgres" is up using version 9.6, which seems to 
 
 #### Changing version
 You can change the default PostgreSQL version (9.6) by adding the environment variable `POSTGRESQL_VERSION`. Eg:
-
 ```bash
 ./scripts/run-confluence-container.sh 6.15.1 POSTGRESQL_VERSION=10.2
 ```
 
 You can use any of the versions available in [the official PostgreSQL Docker repository](https://hub.docker.com/_/postgres)
 
-⚠️Important! Versions earlier that 9.6 present problems with Collaborative Editing feature. 
+⚠️Important! Versions earlier that 9.6 present problems with Collaborative Editing feature.
+
+#### DB recommended version
+| Confluence Version | PostgreSQL version |
+| ------------------ |:------------------:|
+| 5.8.x - 5.10.x | 9.5 |
+| 6.0.x - ... | 9.6 | 
+
+
+ 
+ 
 
 
