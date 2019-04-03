@@ -72,8 +72,7 @@ You can use any of the versions available in [the official PostgreSQL Docker rep
 | Confluence Version | PostgreSQL version |
 | ------------------ |:------------------:|
 | 5.8.x - 5.10.x | 9.5 |
-| 6.0.x - ... | 9.6 | 
-
+| 6.0.x - ... | 9.6 |
 
 ## External user directory
 Most companies use an external directory services to manage users authentication and authorization. To test that scenario I have forked and customized a [Docker image with OpenLDAP in this repository](https://github.com/aruizca/docker-test-openldap), so it can be used out of the box for that purpose.
@@ -82,7 +81,10 @@ A container using this image will be run along with Confluence and available if 
 
 That repo contains also the setting to configure it inside Confluence.
 
- 
- 
+# Troubleshooting
 
-
+### After setting up Confluence everything is slow
+This might be due to the synchrony server (collaborative editing) failing to start up correctly. You can disable synchrony via REST API using the following GET request:
+```
+http://localhost:8090/confluence/rest/synchrony-interop/disable?os_username=admin&os_password=admin
+```
