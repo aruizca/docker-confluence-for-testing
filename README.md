@@ -1,12 +1,16 @@
 docker-confluence-for-testing (WIP)
 ---
 
- 
 Script that provides a one-off command to locally run any Atlassian Confluence version using an Oracle JRE on a Docker container.
 
 It's purpose is just for quickly spin up any standalone version of Confluence to perform tests on it.
 
 ⚠️Important! This is not intended to be used in a production system.
+
+# Requirements
+The only requirement is to have [Docker installed](https://www.docker.com/products/docker-desktop).
+
+Adjusting the available RAM for the Docker engine to at least 4GB is also required. You can find the settings in Docker -> Preferences -> Advanced.
 
 # Usage
 
@@ -88,3 +92,5 @@ This might be due to the synchrony server (collaborative editing) failing to sta
 ```
 http://localhost:8090/confluence/rest/synchrony-interop/disable?os_username=admin&os_password=admin
 ```
+
+Also makes sure that in the Advanced Docker preferences the amount of RAM available for the Docker engine is at least 4GB.
