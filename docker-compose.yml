@@ -15,7 +15,7 @@ services:
       - LANGUAGE
     ports:
       - "8090:8090"
-      - "8091:8091"
+      - "8092:8091"
       - "${DEBUG_PORT}:5005"
     depends_on:
       - ldap
