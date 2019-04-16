@@ -1,53 +1,42 @@
-FROM ubuntu:xenial
-MAINTAINER @aruizca - Angel Ruiz
+FROM ubuntu:18.04
+LABEL MAINTAINER @aruizca - Angel Ruiz
 
-ENV RUN_USER            daemon
-ENV RUN_GROUP           daemon
+# Install some utilse
+RUN apt-get update \
+&& apt-get install -yq wget curl bash jq ttf-dejavu ca-certificates tzdata locales locales-all \
+&& update-ca-certificates \
+&& rm -rf /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
+
+# Use jabba JVM Manger to install Oracle JRE 1.8
+RUN curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | \
+    JABBA_COMMAND="install sjre@1.8 -o /opt/jre" bash
+ENV JAVA_HOME /opt/jre
+ENV PATH $JAVA_HOME/bin:$PATH
 
 # https://confluence.atlassian.com/doc/confluence-home-and-other-important-directories-590259707.html
 ENV CONFLUENCE_HOME          /var/atlassian/application-data/confluence
 ENV CONFLUENCE_INSTALL_DIR   /opt/atlassian/confluence
 
-#VOLUME ["${CONFLUENCE_HOME}"]
+# If no Confluence version provided via command line argument, the last available version will be installed
+ARG CONFLUENCE_VERSION
 
-# Expose HTTP and Synchrony ports
-EXPOSE 8090
-EXPOSE 8091
-
-#RUN apk update -qq \
-#    && update-ca-certificates \
-#    && apk add ca-certificates wget curl openssh bash procps openssl perl ttf-dejavu tini libc6-compat jq \
-#    && rm -rf /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
-RUN apt-get update && \
-    apt-get install -yq wget curl  jq
-
-WORKDIR /root
-
-# Install Jabba JDK Manager
-RUN curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | bash && . ~/.jabba/jabba.sh && \
-    ln -sf ~/.jabba/bin/jabba /usr/local/bin && \
-    chmod -R a+x ~/.jabba/bin/jabba && \
-# Install JDK 8
-    wget -O jdk-8u144-linux-x64.tar.gz https://www.dropbox.com/s/4aeeivy5zzukxp3/jdk-8u144-linux-x64.tar.gz && \
-    jabba install 1.8.144=tgz+file:///root/jdk-8u144-linux-x64.tar.gz && \
-    rm jdk-8u144-linux-x64.tar.gz && \
-    PATH=/root/.jabba/jdk/1.8.144:$PATH
-ENV JAVA_HOME /root/.jabba/jdk/1.8.144
-
-ARG CONFLUENCE_VERSION=6.8.1
-ARG DOWNLOAD_URL=http://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-${CONFLUENCE_VERSION}.tar.gz
+# Expose HTTP, Synchrony ports and Debug ports
+EXPOSE 8090 8091 5005
 
 WORKDIR $CONFLUENCE_HOME
 
-COPY entrypoint.sh              /entrypoint.sh
+RUN mkdir scripts
+COPY scripts/entrypoint.sh /scripts/entrypoint.sh
 
-#COPY . /tmp
+# Download required Confluence version
+RUN [ -n "${CONFLUENCE_VERSION}" ] || export CONFLUENCE_VERSION=$(curl -s https://marketplace.atlassian.com/rest/2/applications/confluence/versions/latest | jq -r '.version') \
+    && export DOWNLOAD_URL="http://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-${CONFLUENCE_VERSION}.tar.gz" \
+    && mkdir -p                          ${CONFLUENCE_INSTALL_DIR} \
+    && curl -L                           ${DOWNLOAD_URL} | tar -xz --strip-components=1 -C "$CONFLUENCE_INSTALL_DIR"
 
-RUN mkdir -p                             ${CONFLUENCE_INSTALL_DIR} \
-    && curl -L --silent                  ${DOWNLOAD_URL} | tar -xz --strip-components=1 -C "$CONFLUENCE_INSTALL_DIR" \
-    && chown -R ${RUN_USER}:${RUN_GROUP} ${CONFLUENCE_INSTALL_DIR}/ \
-    && sed -i -e 's/-Xms\([0-9]\+[kmg]\) -Xmx\([0-9]\+[kmg]\)/-Xms\${JVM_MINIMUM_MEMORY:=\1} -Xmx\${JVM_MAXIMUM_MEMORY:=\2} \${JVM_SUPPORT_RECOMMENDED_ARGS} -Dconfluence.home=\${CONFLUENCE_HOME}/g' ${CONFLUENCE_INSTALL_DIR}/bin/setenv.sh \
-    && sed -i -e 's/port="8090"/port="8090" secure="${catalinaConnectorSecure}" scheme="${catalinaConnectorScheme}" proxyName="${catalinaConnectorProxyName}" proxyPort="${catalinaConnectorProxyPort}"/' ${CONFLUENCE_INSTALL_DIR}/conf/server.xml
+# Perform settings modifications
+RUN sed -i -e 's/-Xms\([0-9]\+[kmg]\) -Xmx\([0-9]\+[kmg]\)/-Xms\${JVM_MINIMUM_MEMORY:=\1} -Xmx\${JVM_MAXIMUM_MEMORY:=\2} \${JVM_SUPPORT_RECOMMENDED_ARGS} -Dconfluence.home=\${CONFLUENCE_HOME} -Dsynchrony.proxy.healthcheck.disabled=true/g' ${CONFLUENCE_INSTALL_DIR}/bin/setenv.sh \
+    && sed -i -e 's/<Context path=""/<Context path="\/confluence"/g' ${CONFLUENCE_INSTALL_DIR}/conf/server.xml \
+    && sed -i -e 's/\${confluence.context.path}/\/confluence/g' ${CONFLUENCE_INSTALL_DIR}/conf/server.xml
 
-CMD ["/entrypoint.sh", "-fg"]
-#ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["/scripts/entrypoint.sh", "-fg"]

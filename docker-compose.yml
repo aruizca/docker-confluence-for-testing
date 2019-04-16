@@ -1,0 +1,50 @@
+version: "3"
+services:
+  confluence:
+    container_name: confluence
+    hostname: confluence
+    image: confluence-4-testing:${CONFLUENCE_VERSION}
+    build:
+      context: .
+      args:
+          CONFLUENCE_VERSION: ${CONFLUENCE_VERSION}
+    environment:
+      - TZ
+      - LC_ALL
+      - LANG
+      - LANGUAGE
+    ports:
+      - "8090:8090"
+      - "8092:8091"
+      - "${DEBUG_PORT}:5005"
+    depends_on:
+      - ldap
+      - postgres
+    networks:
+      - confluence-net
+
+  postgres:
+    image: postgres:${POSTGRESQL_VERSION}
+    container_name: postgres
+    hostname: postgres
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=confluence
+    ports:
+      - "5432:5432"
+    networks:
+      - confluence-net
+
+  ldap:
+    image: aruizca/confluence-test-ldap
+    container_name: ldap
+    hostname: ldap
+    privileged: true
+    ports:
+      - "389:389"
+    networks:
+      - confluence-net
+
+networks:
+  confluence-net:
+    driver: bridge
