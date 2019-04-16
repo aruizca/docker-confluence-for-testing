@@ -36,10 +36,11 @@ Confluence instance will be listening on <http://localhost:8090/confluence>
 ## JAVA Jdk-Version
 
 You can choose with version of java is going to be installed in container.
-To choose you can set JAVA_VERSION variable when runing the container.
+To use this feature, you need to set JAVA_VERSION variable when runing the container.
 
 Java version should be in the format vendor@version, as used in JABBA.
-By default, version to be installed is: sjre@1.8 (Oracle 1.8)
+If no JAVA_VERSION is set, by default, version to be installed is: sjre@1.8 (Oracle 1.8)
+
 For example , to run a container with confluece 5.4.4 (which need java 7) and the zulu 1.7.95 version (wigch is supportorted by JABBA):
 
 ```bash
