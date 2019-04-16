@@ -1,6 +1,15 @@
 FROM ubuntu:18.04
 LABEL MAINTAINER @aruizca - Angel Ruiz
 
+ENV JAVA_HOME /opt/jre
+ENV PATH $JAVA_HOME/bin:$PATH
+# https://confluence.atlassian.com/doc/confluence-home-and-other-important-directories-590259707.html
+ENV CONFLUENCE_HOME          /var/atlassian/application-data/confluence
+ENV CONFLUENCE_INSTALL_DIR   /opt/atlassian/confluence
+
+ARG CONFLUENCE_VERSION
+ARG JAVA_VERSION
+
 # Install some utilse
 RUN apt-get update \
 && apt-get install -yq wget curl bash jq ttf-dejavu ca-certificates tzdata locales locales-all \
@@ -8,17 +17,9 @@ RUN apt-get update \
 && rm -rf /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
 
 # Use jabba JVM Manger to install Oracle JRE 1.8
-RUN curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | \
-    JABBA_COMMAND="install sjre@1.8 -o /opt/jre" bash
-ENV JAVA_HOME /opt/jre
-ENV PATH $JAVA_HOME/bin:$PATH
-
-# https://confluence.atlassian.com/doc/confluence-home-and-other-important-directories-590259707.html
-ENV CONFLUENCE_HOME          /var/atlassian/application-data/confluence
-ENV CONFLUENCE_INSTALL_DIR   /opt/atlassian/confluence
+RUN curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | JABBA_COMMAND="install ${JAVA_VERSION} -o ${JAVA_HOME}" bash
 
 # If no Confluence version provided via command line argument, the last available version will be installed
-ARG CONFLUENCE_VERSION
 
 # Expose HTTP, Synchrony ports and Debug ports
 EXPOSE 8090 8091 5005
