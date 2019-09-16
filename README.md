@@ -124,3 +124,11 @@ This might be due to the synchrony server (collaborative editing) failing to sta
 > <http://localhost:8090/confluence/rest/synchrony-interop/disable?os_username=admin&os_password=admin>
 
 Also makes sure that in the Advanced Docker preferences the amount of RAM available for the Docker engine is at least 4GB.
+
+### Windows 10
+When cloning this repo to a Windows machine, file endings won't be the same as in Unix. To avoid this,
+you can either clone the repo specifying this option:
+````bash
+git clone git@github.com:aruizca/docker-confluence-for-testing.git --config core.autocrlf=input
+````
+Or modify the entrypoint.sh file to use Unix file ending (LF) instead of Windows file ending (CRLF).
