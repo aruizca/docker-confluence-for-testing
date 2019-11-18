@@ -52,7 +52,7 @@ You can check available vendor/version
 
 ## Database selection
 
-To make it esier to test, now the scrit can also run diferent databases.
+By default, it uses postgres, but to make it easier to test with, now the script can also run diferent databases.
 This databases are ready to work, and already configured to work with confluence, so there is no need to
 do any modification (althouh you many need to install the driver into confluence)
 
