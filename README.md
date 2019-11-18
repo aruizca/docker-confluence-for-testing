@@ -33,7 +33,7 @@ Confluence instance will be listening on <http://localhost:8090/confluence>
 ./scripts/run-confluence-container.sh [x.y.z] [ENV=VALUE ENV2=VALUE]
 ```
 
-## JAVA Jdk-Version
+## Java Jdk-Version
 
 You can choose with version of java is going to be installed in container.
 To use this feature, you need to set JAVA_VERSION variable when runing the container.
@@ -49,6 +49,41 @@ For example , to run a container with confluece 5.4.4 (which need java 7) and th
 
 You can check available vendor/version
 > <https://github.com/shyiko/jabba/blob/master/index.json>
+
+## Database selection
+
+To make it esier to test, now the scrit can also run diferent databases.
+This databases are ready to work, and already configured to work with confluence, so there is no need to
+do any modification (althouh you many need to install the driver into confluence)
+
+These are the new supported databases:
+
+mysql:
+   - version: 5.6 
+   - db: confluence
+   - user: confluenceUser
+   - pass: confluenceUser
+   - root pass: password
+
+oracle
+    - version: 2017
+    - b: confluence
+    - user: confluenceUser
+    - pass: confluenceUser
+    - root pass: Confluenc3
+
+sqlserver
+    - version: 12C
+    - db: CONFLUENCE_TS
+    - user: confluence
+    - pass: confluence
+    - sid: xe
+
+For example to run the oracle database jsut do the following:
+
+```bash
+./scripts/run-confluence-container.sh [x.y.z] DATABASE=oracle
+```
 
 ## Debugging port
 
