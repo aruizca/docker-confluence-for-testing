@@ -8,6 +8,7 @@ services:
       context: .
       args:
           CONFLUENCE_VERSION: ${CONFLUENCE_VERSION}
+          JAVA_VERSION: ${JAVA_VERSION}
     environment:
       - TZ
       - LC_ALL
