@@ -19,11 +19,11 @@ args="${@:2}"
 
 case "$1" in
     [0123456789]* )
-        CONFLUENCE_VERSION=$1
-        shift 1;;
+        CONFLUENCE_RUN_VERSION=$1
+    shift 1;;
     -h | --help )
         usage;
-        exit;; # quit and show usage
+    exit;; # quit and show usage
     * )
         # If none the above then the first argument is an environment variable
         args="${@:1}"
@@ -32,18 +32,24 @@ esac
 # Set current folder to parent
 cd "$(dirname "$0")"/..
 
-if [[ ! -z "${CONFLUENCE_VERSION}" ]]
+#load default env varibles
+set -o allexport
+[[ -f .env ]] && source .env
+set +o allexport
+
+if [[ ! -z "${CONFLUENCE_RUN_VERSION}" ]]
 then
-    export CONFLUENCE_VERSION=${CONFLUENCE_VERSION}
+    export "CONFLUENCE_VERSION=${CONFLUENCE_RUN_VERSION}"
 fi
 
 for env_variable in ${args}
 do
- export ${env_variable}
- echo "set environment variable -> ${env_variable}"
+    export ${env_variable}
+    echo "set environment variable -> ${env_variable}"
 done
 
 echo "Starting Confluence version $CONFLUENCE_VERSION"
 echo "---------------------------------"
 
-docker-compose up confluence
+docker-compose up -d ${DATABASE} confluence
+docker logs -f confluence
