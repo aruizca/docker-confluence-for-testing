@@ -46,6 +46,21 @@ services:
     networks:
       - confluence-net
 
+  confluence-puppeteer-setup:
+    image: puppeteer-confluence-setup
+    container_name: puppeteer-confluence-setup
+    hostname: puppeteer
+    environment:
+      - PPTR_HEADLESS=true
+      - PPTR_CONFLUENCE_BASE_URL=http://confluence:8090/confluence
+      - PPTR_CONFLUENCE_LICENSE
+    volumes:
+      - "./screenshots:/app/screenshots"
+    depends_on:
+      - confluence  
+    networks:
+      - confluence-net
+
 networks:
   confluence-net:
     driver: bridge

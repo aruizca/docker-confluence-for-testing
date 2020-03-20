@@ -12,12 +12,14 @@ ARG JAVA_VERSION
 
 # Install some utilse
 RUN apt-get update \
-&& apt-get install -yq wget curl bash jq ttf-dejavu ca-certificates tzdata locales locales-all \
+&& apt-get install -yq wget curl bash jq ttf-dejavu ca-certificates tzdata locales locales-all fontconfig \
 && update-ca-certificates \
 && rm -rf /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
 
 # Use jabba JVM Manger to install Oracle JRE 1.8
 RUN curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | JABBA_COMMAND="install ${JAVA_VERSION} -o ${JAVA_HOME}" bash
+#RUN wget -O /tmp/jre8.tar.gz https://www.dropbox.com/s/c00zobi2bq792uj/jre-8u212-linux-x64.tar.gz?dl=0
+#RUN curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | JABBA_COMMAND="install sjre@1.8=tgz+file:///tmp/jre8.tar.gz -o ${JAVA_HOME}" bash
 
 # If no Confluence version provided via command line argument, the last available version will be installed
 

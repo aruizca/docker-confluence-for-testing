@@ -46,4 +46,4 @@ done
 echo "Starting Confluence version $CONFLUENCE_VERSION"
 echo "---------------------------------"
 
-docker-compose up confluence-puppeteer-setup
+docker-compose up confluence
