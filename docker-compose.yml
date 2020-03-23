@@ -75,7 +75,7 @@ services:
       - confluence-net
 
   confluence-puppeteer-setup:
-    image: puppeteer-confluence-setup
+    image: aruizca/puppeteer-confluence-setup
     container_name: puppeteer-confluence-setup
     hostname: puppeteer
     environment:
