@@ -1,7 +1,5 @@
 # Docker-confluence-for-testing (WIP)
 
----
-
 Script that provides a one-off command to locally run any Atlassian Confluence version using an Oracle JRE on a Docker container.
 
 It's purpose is just for quickly spin up any standalone version of Confluence to perform tests on it.
@@ -16,9 +14,17 @@ Adjusting the available RAM for the Docker engine to at least 4GB is also requir
 
 ## Usage
 
+Its main usage includes a container which will make use of the [puppeteer-confluence-setup image at Docker Hub](https://hub.docker.com/repository/docker/aruizca/puppeteer-confluence-setup) to automate also the initial setup process. For more info go to the [puppeteer-confluence-setup GitHub repo](https://github.com/aruizca/puppeteer-confluence-setup).
+
 ```bash
 ./scripts/run-confluence-container.sh [x.y.z]
 
+```
+
+If you want to perform the setup process manually:
+
+```bash
+./scripts/run-confluence-container-no-setup.sh [x.y.z]
 ```
 
 x.y.z is an optional parameter with the Confluence version number you want to run.
@@ -33,15 +39,21 @@ Confluence instance will be listening on <http://localhost:8090/confluence>
 ./scripts/run-confluence-container.sh [x.y.z] [ENV=VALUE ENV2=VALUE]
 ```
 
-## Java Jdk-Version
+⚠️ Note that it is recommended to provided an environment variable with a valid Confluence instance license, otherwise a [3 hours timebomb license provided by Atlassian](https://developer.atlassian.com/platform/marketplace/timebomb-licenses-for-testing-server-apps/) will be used. Example:
+
+```bash
+PPTR_CONFLUENCE_LICENSE=...
+```
+
+## Java JDK
 
 You can choose with version of java is going to be installed in container.
 To use this feature, you need to set JAVA_VERSION variable when runing the container.
 
 Java version should be in the format vendor@version, as used in JABBA.
-If no JAVA_VERSION is set, by default, version to be installed is: sjre@1.8 (Oracle 1.8)
+If no JAVA_VERSION is set, by default, version to be installed is: `zulu@1.8.232`
 
-For example , to run a container with confluece 5.4.4 (which need java 7) and the zulu 1.7.95 version (wigch is supportorted by JABBA):
+For example , to run a container with confluece 5.4.4 (which need java 7) and the zulu 1.7.95 version (which is supportorted by JABBA):
 
 ```bash
 ./scripts/run-confluence-container.sh 5.4.4 JAVA_VERSION=zulu@1.7.95
