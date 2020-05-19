@@ -20,10 +20,10 @@ args="${@:2}"
 case "$1" in
     [0123456789]* )
         CONFLUENCE_RUN_VERSION=$1
-    shift 1;;
+        shift 1;;
     -h | --help )
         usage;
-    exit;; # quit and show usage
+        exit;; # quit and show usage
     * )
         # If none the above then the first argument is an environment variable
         args="${@:1}"

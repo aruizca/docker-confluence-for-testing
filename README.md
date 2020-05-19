@@ -71,25 +71,28 @@ do any modification (althouh you many need to install the driver into confluence
 These are the new supported databases:
 
 mysql:
-   - version: 5.6 
-   - db: confluence
-   - user: confluenceUser
-   - pass: confluenceUser
-   - root pass: password
+
+- version: 5.6
+- db: confluence
+- user: confluenceUser
+- pass: confluenceUser
+- root pass: password
 
 oracle
-    - version: 2017
-    - b: confluence
-    - user: confluenceUser
-    - pass: confluenceUser
-    - root pass: Confluenc3
+
+- version: 2017
+- b: confluence
+- user: confluenceUser
+- pass: confluenceUser
+- root pass: Confluenc3
 
 sqlserver
-    - version: 12C
-    - db: CONFLUENCE_TS
-    - user: confluence
-    - pass: confluence
-    - sid: xe
+
+- version: 12C
+- db: CONFLUENCE_TS
+- user: confluence
+- pass: confluence
+- sid: xe
 
 For example to run the oracle database jsut do the following:
 
