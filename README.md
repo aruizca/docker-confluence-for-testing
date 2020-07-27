@@ -45,6 +45,15 @@ Confluence instance will be listening on <http://localhost:8090/confluence>
 PPTR_CONFLUENCE_LICENSE=...
 ```
 
+### Other useful scripts
+
+- `install-app.sh`: script to install an app via URL or file path. `install-app.sh -h` for details.
+
+- `install-app-license.sh`: script to add licensing to a previously installed app. `install-app-license.sh -h` for details.
+
+- `full-app-setup-example.sh`: this example shows the full cycle of installing Confluence, set it up, install an app, and add a license. This is useful to prepare the environment to execute e2e tests.
+
+
 ## Java JDK
 
 You can choose with version of java is going to be installed in container.
