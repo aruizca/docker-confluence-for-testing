@@ -53,5 +53,5 @@ echo "---------------------------------"
 
 docker-compose up -d ${DATABASE} puppeteer-confluence-setup
 docker logs -f puppeteer-confluence-setup
-docker logs -f confluence
+
 
