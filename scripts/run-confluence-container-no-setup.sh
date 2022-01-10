@@ -51,4 +51,4 @@ echo "Starting Confluence version $CONFLUENCE_VERSION"
 echo "---------------------------------"
 
 docker-compose up -d ${DATABASE} confluence
-docker logs -f confluence
+docker logs -f confluence_${CONFLUENCE_VERSION}

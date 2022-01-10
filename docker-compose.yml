@@ -1,7 +1,7 @@
 version: "3"
 services:
   confluence:
-    container_name: confluence
+    container_name: confluence_${CONFLUENCE_VERSION}
     hostname: confluence
     image: confluence-4-testing:${CONFLUENCE_VERSION}
     build:
@@ -19,13 +19,13 @@ services:
       - "8092:8091"
       - "${DEBUG_PORT}:5005"
     depends_on:
-       - ldap  
+       - ldap
     networks:
       - confluence-net
 
   postgres:
     image: postgres:${POSTGRESQL_VERSION}
-    container_name: postgres
+    container_name: postgres_${CONFLUENCE_VERSION}
     hostname: postgres
     environment:
       - POSTGRES_PASSWORD=postgres
@@ -61,12 +61,12 @@ services:
     ports:
       - "1433:1433"
     networks:
-      - confluence-net    
+      - confluence-net
 
 
   ldap:
     image: aruizca/confluence-test-ldap
-    container_name: ldap
+    container_name: ldap_${CONFLUENCE_VERSION}
     hostname: ldap
     privileged: true
     ports:
@@ -85,7 +85,7 @@ services:
     volumes:
       - "./screenshots:/app/screenshots"
     depends_on:
-      - confluence  
+      - confluence_${CONFLUENCE_VERSION}
     networks:
       - confluence-net
 
