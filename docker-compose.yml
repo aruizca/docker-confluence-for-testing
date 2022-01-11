@@ -85,7 +85,7 @@ services:
     volumes:
       - "./screenshots:/app/screenshots"
     depends_on:
-      - confluence_${CONFLUENCE_VERSION}
+      - confluence
     networks:
       - confluence-net
 
