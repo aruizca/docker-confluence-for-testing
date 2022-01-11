@@ -41,14 +41,25 @@ if [[ ! -z "${CONFLUENCE_RUN_VERSION}" ]]
 then
     export "CONFLUENCE_VERSION=${CONFLUENCE_RUN_VERSION}"
 fi
+
 for env_variable in ${args}
 do
-    export ${env_variable}
-    echo "set environment variable -> ${env_variable}"
+    if [ "$env_variable" == "ISOLATED" ]; then
+      echo "Setting ISOLATED mode"
+      ISOLATED="true"
+    else
+      export ${env_variable}
+      echo "set environment variable -> ${env_variable}"
+    fi
 done
 
 echo "Starting Confluence version $CONFLUENCE_VERSION"
 echo "---------------------------------"
 
-docker-compose up -d ${DATABASE} confluence
+if [[ -z "${ISOLATED}" ]]; then
+  docker-compose up -d ${DATABASE} confluence
+else
+  docker-compose -p ${CONFLUENCE_VERSION} up -d ${DATABASE} confluence
+fi
+
 docker logs -f confluence_${CONFLUENCE_VERSION}

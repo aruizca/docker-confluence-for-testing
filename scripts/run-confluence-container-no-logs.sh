@@ -44,14 +44,24 @@ fi
 
 for env_variable in ${args}
 do
-    export ${env_variable}
-    echo "set environment variable -> ${env_variable}"
+    if [ "$env_variable" == "ISOLATED" ]; then
+      echo "Setting ISOLATED mode"
+      ISOLATED="true"
+    else
+      export ${env_variable}
+      echo "set environment variable -> ${env_variable}"
+    fi
 done
 
 echo "Starting Confluence version $CONFLUENCE_VERSION"
 echo "---------------------------------"
 
-docker-compose up -d ${DATABASE} puppeteer-confluence-setup
+if [[ -z "${ISOLATED}" ]]; then
+  docker-compose up -d ${DATABASE} puppeteer-confluence-setup
+else
+  docker-compose -p ${CONFLUENCE_VERSION} up -d ${DATABASE} puppeteer-confluence-setup
+fi
+
 docker logs -f puppeteer-confluence-setup
 
 
