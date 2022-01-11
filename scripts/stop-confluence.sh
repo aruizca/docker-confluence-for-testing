@@ -48,9 +48,12 @@ for env_variable in ${args}; do
   echo "set environment variable -> ${env_variable}"
 done
 
-echo "Stoping all containers for Confluence version $CONFLUENCE_VERSION"
+echo "Stoping all containers for Confluence $CONFLUENCE_RUN_VERSION"
 echo "---------------------------------"
 
-#stop using both, project name and no project, to simplify usage
-docker-compose -p "${CONFLUENCE_VERSION}" stop
-docker-compose stop
+#stop only specific version of confluence if it was specified on command
+if [[ -z "${CONFLUENCE_RUN_VERSION}" ]]; then
+  docker-compose stop
+else
+  docker-compose -p "${CONFLUENCE_RUN_VERSION}" stop
+fi
