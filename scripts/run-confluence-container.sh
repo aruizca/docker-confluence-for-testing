@@ -52,6 +52,6 @@ done
 echo "Starting Confluence version $CONFLUENCE_VERSION"
 echo "---------------------------------"
 
-docker-compose -p ${PROJECT_NAME} up -d ${DATABASE} puppeteer-confluence-setup
+docker-compose -p ${CONFLUENCE_VERSION//.} up -d ${DATABASE} puppeteer-confluence-setup
 docker logs -f puppeteer-confluence-setup
 docker logs -f confluence_${CONFLUENCE_VERSION}
