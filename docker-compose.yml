@@ -1,14 +1,14 @@
 version: "3"
 services:
   confluence:
-    container_name: confluence
+    container_name: confluence_${CONFLUENCE_VERSION}
     hostname: confluence
     image: confluence-4-testing:${CONFLUENCE_VERSION}
     build:
       context: .
       args:
-          CONFLUENCE_VERSION: ${CONFLUENCE_VERSION}
-          JAVA_VERSION: ${JAVA_VERSION}
+        CONFLUENCE_VERSION: ${CONFLUENCE_VERSION}
+        JAVA_VERSION: ${JAVA_VERSION}
     environment:
       - TZ
       - LC_ALL
@@ -19,13 +19,13 @@ services:
       - "8092:8091"
       - "${DEBUG_PORT}:5005"
     depends_on:
-       - ldap  
+      - ldap
     networks:
       - confluence-net
 
   postgres:
     image: postgres:${POSTGRESQL_VERSION}
-    container_name: postgres
+    container_name: postgres_${CONFLUENCE_VERSION}
     hostname: postgres
     environment:
       - POSTGRES_PASSWORD=postgres
@@ -36,7 +36,7 @@ services:
       - confluence-net
 
   oracle:
-    image: oskarflores/confluence-database:oracle-12c
+    image: oskarflores/confluence-database:oracle-${ORACLE_VERSION}
     container_name: oracle
     hostname: oracle
     ports:
@@ -46,7 +46,7 @@ services:
       - confluence-net
 
   mysql:
-    image: oskarflores/confluence-database:mysql-5.6
+    image: oskarflores/confluence-database:mysql-${MYSQL_VERSION}
     container_name: mysql
     hostname: mysql
     ports:
@@ -55,18 +55,18 @@ services:
       - confluence-net
 
   sqlserver:
-    image: oskarflores/confluence-database:sqlserver-2017
+    image: oskarflores/confluence-database:sqlserver-${SQLSERVER_VERSION}
     container_name: sqlserver
     hostname: sqlserver
     ports:
       - "1433:1433"
     networks:
-      - confluence-net    
+      - confluence-net
 
 
   ldap:
     image: aruizca/confluence-test-ldap
-    container_name: ldap
+    container_name: ldap_${CONFLUENCE_VERSION}
     hostname: ldap
     privileged: true
     ports:
@@ -85,7 +85,7 @@ services:
     volumes:
       - "./screenshots:/app/screenshots"
     depends_on:
-      - confluence  
+      - confluence
     networks:
       - confluence-net
 

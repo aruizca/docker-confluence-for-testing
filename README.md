@@ -174,6 +174,21 @@ A container using this image will be run along with Confluence and available if 
 
 That repo contains also the setting to configure it inside Confluence.
 
+## Running isolated confluence versions with its own database
+
+Docker compose allows to run the same docker services defined in a compose file in different isolated layers: https://docs.docker.com/compose/#multiple-isolated-environments-on-a-single-host
+
+This way, we can start up a confluence version (ie: 7.15.0) with postgres 9.6, configure with desired data, stop containers and then start up another confluence version, ie 7.13.2 with its own postgres 9.6. Each container have a different name and data will be stored separately from each other. In order to be used, the ISOLATED parameter has to be set. Otherwise, the containers will be replaced. Examples steps:
+- run `./scripts/run-confluence-container-no-setup.sh 7.15.0`
+- configure everything on localhost:8090
+- stop all 7.15.0 containers: `./scripts/stop-confluence.sh 7.15.0`
+- run another confluence: `./scripts/run-confluence-container-no-setup.sh 7.13.2`
+- configure everything on localhost:8090
+
+Now you can switch between one confluence keeping its data isolated.
+
+NOTE: Running different version of confluence/databases at the same time is (still) not supported. Some changes regarding port binding is required.
+
 ## Troubleshooting
 
 ### After setting up Confluence everything is slow

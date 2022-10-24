@@ -2,7 +2,7 @@
 #-e  Exit immediately if a command exits with a non-zero status.
 set -e
 
-function usage {
+function usage() {
   local scriptName=$(basename "$0")
   echo "usage: ${scriptName} x.y.z ENV=VALUE ENV2=VALUE"
   echo "   "
@@ -43,15 +43,18 @@ if [[ ! -z "${CONFLUENCE_RUN_VERSION}" ]]; then
   export "CONFLUENCE_VERSION=${CONFLUENCE_RUN_VERSION}"
 fi
 
-for env_variable in ${args}
-do
-    export ${env_variable}
-    echo "set environment variable -> ${env_variable}"
+for env_variable in ${args}; do
+  export ${env_variable}
+  echo "set environment variable -> ${env_variable}"
 done
 
-echo "Starting Confluence version $CONFLUENCE_VERSION"
+echo "Stoping all containers for Confluence $CONFLUENCE_RUN_VERSION"
 echo "---------------------------------"
 
-docker-compose -p ${PROJECT_NAME} up -d ${DATABASE} puppeteer-confluence-setup
-docker logs -f puppeteer-confluence-setup
-docker logs -f confluence_${CONFLUENCE_VERSION}
+#stop only specific version of confluence if it was specified on command
+if [[ -z "${CONFLUENCE_RUN_VERSION}" ]]; then
+  docker-compose stop
+else
+  PROJECT_NAME="${CONFLUENCE_RUN_VERSION//.}"
+  docker-compose -p "${PROJECT_NAME}" stop
+fi

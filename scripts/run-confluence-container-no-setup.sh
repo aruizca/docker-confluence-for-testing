@@ -32,7 +32,7 @@ esac
 # Set current folder to parent
 cd "$(dirname "$0")"/..
 
-#load default env varibles
+#load default env variables
 set -o allexport
 [[ -f .env ]] && source .env
 set +o allexport
@@ -50,5 +50,5 @@ done
 echo "Starting Confluence version $CONFLUENCE_VERSION"
 echo "---------------------------------"
 
-docker-compose up -d ${DATABASE} confluence
-docker logs -f confluence
+docker-compose -p ${CONFLUENCE_VERSION//.} up -d ${DATABASE} confluence
+docker logs -f confluence_${CONFLUENCE_VERSION}
