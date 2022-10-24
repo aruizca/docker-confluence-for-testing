@@ -46,6 +46,7 @@ for env_variable in ${args}
 do
     if [ "$env_variable" == "ISOLATED" ]; then
       echo "Setting ISOLATED mode"
+      PROJECT_NAME="${CONFLUENCE_VERSION//.}"
       ISOLATED="true"
     else
       export ${env_variable}
@@ -59,7 +60,7 @@ echo "---------------------------------"
 if [[ -z "${ISOLATED}" ]]; then
   docker-compose up -d ${DATABASE} confluence
 else
-  docker-compose -p ${CONFLUENCE_VERSION} up -d ${DATABASE} confluence
+  docker-compose -p ${PROJECT_NAME} up -d ${DATABASE} confluence
 fi
 
 docker logs -f confluence_${CONFLUENCE_VERSION}

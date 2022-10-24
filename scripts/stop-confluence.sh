@@ -55,5 +55,6 @@ echo "---------------------------------"
 if [[ -z "${CONFLUENCE_RUN_VERSION}" ]]; then
   docker-compose stop
 else
-  docker-compose -p "${CONFLUENCE_RUN_VERSION}" stop
+  PROJECT_NAME="${CONFLUENCE_RUN_VERSION//.}"
+  docker-compose -p "${PROJECT_NAME}" stop
 fi
