@@ -36,7 +36,7 @@ services:
       - confluence-net
 
   oracle:
-    image: oskarflores/confluence-database:oracle-12c
+    image: oskarflores/confluence-database:oracle-${ORACLE_VERSION}
     container_name: oracle
     hostname: oracle
     ports:
@@ -46,7 +46,7 @@ services:
       - confluence-net
 
   mysql:
-    image: oskarflores/confluence-database:mysql-5.6
+    image: oskarflores/confluence-database:mysql-${MYSQL_VERSION}
     container_name: mysql
     hostname: mysql
     ports:
@@ -55,7 +55,7 @@ services:
       - confluence-net
 
   sqlserver:
-    image: oskarflores/confluence-database:sqlserver-2017
+    image: oskarflores/confluence-database:sqlserver-${SQLSERVER_VERSION}
     container_name: sqlserver
     hostname: sqlserver
     ports:
