@@ -1,7 +1,7 @@
 version: "3"
 services:
   confluence:
-    container_name: confluence_${CONFLUENCE_VERSION}
+    container_name: confluence_${CONFLUENCE_VERSION}_${CONFLUENCE_PORT}
     hostname: confluence
     image: confluence-4-testing:${CONFLUENCE_VERSION}
     build:
@@ -15,8 +15,8 @@ services:
       - LANG
       - LANGUAGE
     ports:
-      - "8090:8090"
-      - "8092:8091"
+      - "${CONFLUENCE_PORT}:8090"
+      - "${CONFLUENCE_SYNCHRONY_PORT}:8091"
       - "${DEBUG_PORT}:5005"
     depends_on:
       - ldap
@@ -25,13 +25,13 @@ services:
 
   postgres:
     image: postgres:${POSTGRESQL_VERSION}
-    container_name: postgres_${CONFLUENCE_VERSION}
+    container_name: postgres_${CONFLUENCE_VERSION}_${CONFLUENCE_PORT}
     hostname: postgres
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=confluence
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
     networks:
       - confluence-net
 
@@ -40,8 +40,8 @@ services:
     container_name: oracle
     hostname: oracle
     ports:
-      - "1521:1521"
-      - "8080:8080"
+      - "${ORACLE_LISTENER_PORT}:1521"
+      - "${ORACLE_PORT}:8080"
     networks:
       - confluence-net
 
@@ -50,7 +50,7 @@ services:
     container_name: mysql
     hostname: mysql
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT}:3306"
     networks:
       - confluence-net
 
@@ -59,18 +59,18 @@ services:
     container_name: sqlserver
     hostname: sqlserver
     ports:
-      - "1433:1433"
+      - "${SQLSERVER_PORT}:1433"
     networks:
       - confluence-net
 
 
   ldap:
     image: aruizca/confluence-test-ldap
-    container_name: ldap_${CONFLUENCE_VERSION}
+    container_name: ldap_${CONFLUENCE_VERSION}_${CONFLUENCE_PORT}
     hostname: ldap
     privileged: true
     ports:
-      - "389:389"
+      - "${LDAP_PORT}:389"
     networks:
       - confluence-net
 
