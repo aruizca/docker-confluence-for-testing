@@ -29,9 +29,28 @@ If you want to perform the setup process manually:
 
 x.y.z is an optional parameter with the Confluence version number you want to run.
 
-Otherwise the default version that appears on the .env file will be used.
+Otherwise, the default version that appears on the .env file will be used.
 
-Confluence instance will be listening on <http://localhost:8090/confluence>
+
+The docker container will be generated using the ports showed below.
+
+| PORT TYPE             |      |      |     |     |     |     |
+|-----------------------|------|:----:|-----|-----|-----|-----|
+| CONFLUENCE_PORTS_LIST | 8090 | 9010 |  9020   |   9030  |   9040  |    9050 |
+| LDAP_PORTS_LIST       | 388  | 389  |  387   |  386   |  385   |   384  |
+| POSTGRES_PORTS_LIST   | 5543 | 5432 |   5654  |  5765   |   5876  |  5987   |
+| DEBUG_PORTS_LIST      | 5007 | 5006 |  5008   |  5009   |  5010   | 5011    |
+
+For each Confluence instance we try to start up, it will check if the port is being used, if so, it will use the next one according to the PORT TYPE table.
+
+This way, the first Confluence instance we create will be listening on <http://localhost:8090/confluence>, the second one <http://localhost:9010/confluence> and so on.
+
+If you prefer using your own port lists, you can set in your environment variables with the same name but separating the ports with ","; for example:
+
+```bash 
+export CONFLUENCE_PORTS_LIST=7980,7970,7960,7950,7940,7930
+```
+
 
 ## Additional settings
 
@@ -163,8 +182,8 @@ You can use any of the versions available in [the official PostgreSQL Docker rep
 #### DB recommended version
 | Confluence Version | PostgreSQL version |
 |--------------------|:------------------:|
-| 5.8.x - 5.10.x     |        9.5         |
-| 6.0.x - ...        |        9.6         |
+| 7.9.0 - 7.20.0     |        9.6         |
+      |
 
 ## External user directory
 

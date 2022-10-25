@@ -14,6 +14,48 @@ function usage {
   echo "  -h | --help                   : This message"
 }
 
+function getConfluencePorts() {
+  if [[ ! -z "${CONFLUENCE_PORTS_LIST}" ]]; then
+      confluencePorts=($(echo ${CONFLUENCE_PORTS_LIST} | tr "," "\n"))
+      echo ${confluencePorts[*]}
+    else
+      confluencePorts=(8090 9010 9020 9030 9040 9050)
+      echo ${confluencePorts[*]}
+  fi
+}
+
+function getLdapPorts() {
+  if [[ ! -z "${LDAP_PORTS_LIST}" ]]; then
+      ldapPorts=($(echo ${LDAP_PORTS_LIST} | tr "," "\n"))
+      echo ${ldapPorts[*]}
+    else
+      ldapPorts=(389 388 387 386 385 384)
+      echo ${ldapPorts[*]}
+  fi
+}
+
+function getPostgresPorts() {
+  if [[ ! -z "${POSTGRES_PORTS_LIST}" ]]; then
+      postgresPorts=($(echo ${POSTGRES_PORTS_LIST} | tr "," "\n"))
+      echo ${postgresPorts[*]}
+    else
+      ldapPorts=(5432 5543 5654 5765 5876 5987)
+      echo ${postgresPorts[*]}
+  fi
+}
+
+function getDebugPorts() {
+  if [[ ! -z "${DEBUG_PORTS_LIST}" ]]; then
+      debugPorts=($(echo ${DEBUG_PORTS_LIST} | tr "," "\n"))
+      echo ${debugPorts[*]}
+    else
+      ldapPorts=(5006 5007 5008 5009 5010 5011)
+      echo ${debugPorts[*]}
+  fi
+}
+
+## TODO oraclePorts, oracleListenerPorts, mysqlPorts, sqlServerPorts
+
 # By default we ignore the first argument
 args="${@:2}"
 
@@ -40,19 +82,15 @@ set -o allexport
 [[ -f .env ]] && source .env
 set +o allexport
 
-confluencePorts=$(echo ${CONFLUENCE_PORTS_LIST} | tr "," "\n")
-ldapPorts=($(echo ${LDAP_PORTS_LIST} | tr "," "\n"))
-postgresPorts=($(echo ${POSTGRES_PORTS_LIST} | tr "," "\n"))
-debugPorts=($(echo ${DEBUG_PORT_LIST} | tr "," "\n"))
-oraclePorts=($(echo ${ORACLE_PORT_LIST} | tr "," "\n"))
-oracleListenerPorts=($(echo ${ORACLE_LISTENER_PORT_LIST} | tr "," "\n"))
-mysqlPorts=($(echo ${MYSQL_PORT_LIST} | tr "," "\n"))
-sqlServerPorts=($(echo ${SQLSERVER_PORT_LIST} | tr "," "\n"))
+
+confluencePorts=$(getConfluencePorts)
+ldapPorts=$(getLdapPorts)
+postgresPorts=$(getPostgresPorts)
+debugPorts=$(getDebugPorts)
 
 iterator=0
 for confluencePort in $confluencePorts
 do
-  echo ${iterator}
   echo "Trying to raise the server up in port -> ${confluencePort}"
 
   SERVER=localhost PORT=${confluencePort}
@@ -68,10 +106,7 @@ do
     export "LDAP_PORT=${ldapPorts[${iterator}]}"
     export "POSTGRES_PORT=${postgresPorts[${iterator}]}"
     export "DEBUG_PORT=${debugPorts[${iterator}]}"
-    export "ORACLE_PORT=${oraclePorts[${iterator}]}"
-    export "ORACLE_LISTENER_PORT=${oracleListenerPorts[${iterator}]}"
-    export "MYSQL_PORT=${mysqlPorts[${iterator}]}"
-    export "SQLSERVER_PORT=${sqlServerPorts[${iterator}]}"
+    # TODO oraclePorts, oracleListenerPorts, mysqlPorts, sqlServerPorts exports
     break
   fi
   iterator=`expr ${iterator} + 1`
@@ -89,3 +124,6 @@ done
 
 echo "Starting Confluence version $CONFLUENCE_VERSION"
 echo "---------------------------------"
+
+
+
