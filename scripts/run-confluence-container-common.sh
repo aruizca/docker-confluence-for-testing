@@ -39,7 +39,7 @@ function getPostgresPorts() {
       postgresPorts=($(echo ${POSTGRES_PORTS_LIST} | tr "," "\n"))
       echo ${postgresPorts[*]}
     else
-      ldapPorts=(5432 5543 5654 5765 5876 5987)
+      postgresPorts=(5432 5543 5654 5765 5876 5987)
       echo ${postgresPorts[*]}
   fi
 }
@@ -49,7 +49,7 @@ function getDebugPorts() {
       debugPorts=($(echo ${DEBUG_PORTS_LIST} | tr "," "\n"))
       echo ${debugPorts[*]}
     else
-      ldapPorts=(5006 5007 5008 5009 5010 5011)
+      debugPorts=(5006 5007 5008 5009 5010 5011)
       echo ${debugPorts[*]}
   fi
 }
@@ -84,9 +84,9 @@ set +o allexport
 
 
 confluencePorts=$(getConfluencePorts)
-ldapPorts=$(getLdapPorts)
-postgresPorts=$(getPostgresPorts)
-debugPorts=$(getDebugPorts)
+ldapPorts=($(getLdapPorts))
+postgresPorts=($(getPostgresPorts))
+debugPorts=($(getDebugPorts))
 
 iterator=0
 for confluencePort in $confluencePorts
