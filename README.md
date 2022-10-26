@@ -17,17 +17,17 @@ Adjusting the available RAM for the Docker engine to at least 4GB is also requir
 Its main usage includes a container which will make use of the [puppeteer-confluence-setup image at Docker Hub](https://hub.docker.com/repository/docker/aruizca/puppeteer-confluence-setup) to automate also the initial setup process. For more info go to the [puppeteer-confluence-setup GitHub repo](https://github.com/aruizca/puppeteer-confluence-setup).
 
 ```bash
-./scripts/run-confluence-container.sh [x.y.z]
+./scripts/run-confluence-container.sh -v [x.y.z]
 
 ```
 
 If you want to perform the setup process manually:
 
 ```bash
-./scripts/run-confluence-container-no-setup.sh [x.y.z]
+./scripts/run-confluence-container-no-setup.sh -v [x.y.z]
 ```
 
-x.y.z is an optional parameter with the Confluence version number you want to run.
+-v [x.y.z] is an optional flag that follows with the Confluence version number you want to run.
 
 Otherwise, the default version that appears on the .env file will be used.
 
@@ -39,6 +39,14 @@ Besides, you also can add flags for adding an alias to the Container name
 
 This way, the container will have the alias set in the flag in its own name.
 
+You also can set the different environment variables configured in .env file by using the "-e" flag.
+
+```bash
+./scripts/run-confluence-container-no-setup.sh -e "ENV=VALUE ENV2=VALUE"
+```
+
+This way the environment variables passed in the flag will override the actual ones and will be used in the script.
+Note that if you want to set more than one environment variable, you will have to write them within the "" quotes.
 
 The docker container will be generated using the ports showed below.
 
@@ -63,7 +71,7 @@ export CONFLUENCE_PORTS_LIST=7980,7970,7960,7950,7940,7930
 ## Additional settings
 
 ```bash
-./scripts/run-confluence-container.sh [x.y.z] [ENV=VALUE ENV2=VALUE]
+./scripts/run-confluence-container.sh -v [x.y.z] -e "ENV=VALUE ENV2=VALUE"
 ```
 
 ⚠️ Note that it is recommended to provided an environment variable with a valid Confluence instance license, otherwise a [3 hours timebomb license provided by Atlassian](https://developer.atlassian.com/platform/marketplace/timebomb-licenses-for-testing-server-apps/) will be used. Example:
@@ -92,7 +100,7 @@ If no JAVA_VERSION is set, by default, version to be installed is: `zulu@1.8.232
 For example , to run a container with confluece 5.4.4 (which need java 7) and the zulu 1.7.95 version (which is supportorted by JABBA):
 
 ```bash
-./scripts/run-confluence-container.sh 5.4.4 JAVA_VERSION=zulu@1.7.95
+./scripts/run-confluence-container.sh -v 5.4.4 -e JAVA_VERSION=zulu@1.7.95
 ```
 
 You can check available vendor/version
@@ -133,7 +141,7 @@ sqlserver
 For example to run the oracle database jsut do the following:
 
 ```bash
-./scripts/run-confluence-container.sh [x.y.z] DATABASE=oracle
+./scripts/run-confluence-container.sh -v [x.y.z] -e DATABASE=oracle
 ```
 
 ## Debugging port
@@ -180,7 +188,7 @@ By default a container named "postgres" is up using version 9.6, which seems to 
 You can change the default PostgreSQL version (9.6) by adding the environment variable `POSTGRESQL_VERSION`. Eg:
 
 ```bash
-./scripts/run-confluence-container.sh 6.15.1 POSTGRESQL_VERSION=10.2
+./scripts/run-confluence-container.sh -v 6.15.1 -e POSTGRESQL_VERSION=10.2
 ```
 
 You can use any of the versions available in [the official PostgreSQL Docker repository](https://hub.docker.com/_/postgres)
