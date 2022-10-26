@@ -31,6 +31,14 @@ x.y.z is an optional parameter with the Confluence version number you want to ru
 
 Otherwise, the default version that appears on the .env file will be used.
 
+Besides, you also can add flags for adding an alias to the Container name
+
+```bash
+./scripts/run-confluence-container-no-setup.sh -a [alias]
+```
+
+This way, the container will have the alias set in the flag in its own name.
+
 
 The docker container will be generated using the ports showed below.
 

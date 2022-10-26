@@ -2,7 +2,5 @@
 
 source run-confluence-container-common.sh $@
 
-packageName="${CONFLUENCE_VERSION//.//-}--${CONFLUENCE_PORT}"
-
-docker-compose -p ${packageName} up -d ${DATABASE} confluence
-docker logs -f confluence_${CONFLUENCE_VERSION}
+docker-compose -p ${PACKAGE_NAME} up -d ${DATABASE} confluence
+docker logs -f confluence_${PACKAGE_NAME}

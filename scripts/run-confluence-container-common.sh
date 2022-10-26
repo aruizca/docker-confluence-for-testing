@@ -56,6 +56,22 @@ function getDebugPorts() {
 
 ## TODO oraclePorts, oracleListenerPorts, mysqlPorts, sqlServerPorts
 
+
+while getopts 'a:' OPTION; do
+  case "$OPTION" in
+    a)
+      alias="$OPTARG"
+      export "ALIAS"="${alias}"
+      ;;
+    ?)
+      echo "script usage: $(basename \$0) [-a alias] [x.y.z] [ENV=VALUE ENV2=VALUE]" >&2
+      exit 1
+      ;;
+  esac
+done
+shift "$(($OPTIND -1))"
+
+
 # By default we ignore the first argument
 args="${@:2}"
 
@@ -121,6 +137,16 @@ do
     export ${env_variable}
     echo "set environment variable -> ${env_variable}"
 done
+
+if [[ ! -z "${ALIAS}" ]];
+  then
+    export "PACKAGE_NAME"="${CONFLUENCE_VERSION//./-}--${CONFLUENCE_PORT}--${ALIAS}"
+  else
+    export "PACKAGE_NAME"="${CONFLUENCE_VERSION//./-}--${CONFLUENCE_PORT}"
+fi
+
+echo ${PACKAGE_NAME}
+
 
 echo "Starting Confluence version $CONFLUENCE_VERSION"
 echo "---------------------------------"

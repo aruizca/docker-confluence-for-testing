@@ -2,8 +2,6 @@
 
 source run-confluence-container-common.sh $@
 
-packageName="${CONFLUENCE_VERSION//.//-}--${CONFLUENCE_PORT}"
-
-docker-compose -p ${packageName} up -d ${DATABASE} puppeteer-confluence-setup
+docker-compose -p ${PACKAGE_NAME} up -d ${DATABASE} puppeteer-confluence-setup
 docker logs -f puppeteer-confluence-setup
-docker logs -f confluence_${CONFLUENCE_VERSION}
+docker logs -f confluence_${PACKAGE_NAME}

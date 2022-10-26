@@ -1,7 +1,7 @@
 version: "3"
 services:
   confluence:
-    container_name: confluence_${CONFLUENCE_VERSION}_${CONFLUENCE_PORT}
+    container_name: confluence_${PACKAGE_NAME}
     hostname: confluence
     image: confluence-4-testing:${CONFLUENCE_VERSION}
     build:
