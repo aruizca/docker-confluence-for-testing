@@ -28,7 +28,7 @@ services:
 
   postgres:
     image: postgres:${POSTGRESQL_VERSION}
-    container_name: postgres_${CONFLUENCE_VERSION}_${CONFLUENCE_PORT}
+    container_name: postgres_${PACKAGE_NAME}
     hostname: postgres
     environment:
       - POSTGRES_PASSWORD=postgres
@@ -69,7 +69,7 @@ services:
 
   ldap:
     image: aruizca/confluence-test-ldap
-    container_name: ldap_${CONFLUENCE_VERSION}_${CONFLUENCE_PORT}
+    container_name: ldap_${PACKAGE_NAME}
     hostname: ldap
     privileged: true
     ports:
