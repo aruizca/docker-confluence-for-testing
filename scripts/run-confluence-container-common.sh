@@ -62,7 +62,8 @@ function getDebugPorts() {
 ## TODO oraclePorts, oracleListenerPorts, mysqlPorts, sqlServerPorts
 
 ## Processes all flags available in this scripts
-while getopts 'a:v:e:' OPTION; do
+while getopts 'a:v:e:h:' OPTION; do
+  echo "option = ${OPTION}"
   case "$OPTION" in
     a)
       alias="$OPTARG"
@@ -70,21 +71,20 @@ while getopts 'a:v:e:' OPTION; do
     v)
       version="$OPTARG"
       case "$version" in
-      [0123456789]*)
-        CONFLUENCE_RUN_VERSION=${version}
-        shift 1
-        ;;
-      *)
-        # If none the above then the first argument is an environment variable
-        args="${@:1}"
-        ;;
-      esac
+        [0123456789]*)
+          CONFLUENCE_RUN_VERSION=${version}
+          ;;
+        *)
+          # If none the above then the first argument is an environment variable
+          args="${@:1}"
+          ;;
+        esac
       ;;
     e)
         set -f # disable glob
         IFS=' ' # split on commas
         env_variables=($OPTARG) ;; # use the split+glob operator
-    -h)
+    h)
         usage
         exit
         ;; # quit and show usage
@@ -145,6 +145,7 @@ do
     echo "set environment variable -> ${env_variable}"
 done
 
+echo "alias is ${alias}"
 if [[ ! -z "${alias}" ]];
   then
     export "PACKAGE_NAME"="${CONFLUENCE_VERSION//./-}--${CONFLUENCE_PORT}--${alias}"
