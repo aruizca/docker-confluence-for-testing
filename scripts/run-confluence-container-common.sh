@@ -18,7 +18,7 @@ function usage {
   echo "  -e : Environment variables to set | eg: ${scriptName} -e \"CONFLUENCE_PORT=8094 DEBUG_PORT=5008\""
   echo "  -h : Shows this message"
 }
-
+##
 function getConfluencePorts() {
   if [[ ! -z "${CONFLUENCE_PORTS_LIST}" ]]; then
       confluencePorts=($(echo ${CONFLUENCE_PORTS_LIST} | tr "," "\n"))
@@ -145,7 +145,6 @@ do
     echo "set environment variable -> ${env_variable}"
 done
 
-echo "alias is ${alias}"
 if [[ ! -z "${alias}" ]];
   then
     export "PACKAGE_NAME"="${CONFLUENCE_VERSION//./-}--${CONFLUENCE_PORT}--${alias}"
@@ -153,7 +152,9 @@ if [[ ! -z "${alias}" ]];
     export "PACKAGE_NAME"="${CONFLUENCE_VERSION//./-}--${CONFLUENCE_PORT}"
 fi
 
-echo ${PACKAGE_NAME}
+echo "Container name = ${PACKAGE_NAME}"
+echo "  "
+echo "running server in http://localhost:${CONFLUENCE_PORT}/confluence"
 
 
 echo "Starting Confluence version $CONFLUENCE_VERSION"

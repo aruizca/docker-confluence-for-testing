@@ -79,7 +79,7 @@ services:
 
   puppeteer-confluence-setup:
     image: aruizca/puppeteer-confluence-setup
-    container_name: puppeteer-confluence-setup
+    container_name: puppeteer-confluence-setup_${CONFLUENCE_VERSION}_${CONFLUENCE_PORT}
     hostname: puppeteer
     environment:
       - PPTR_HEADLESS=true
