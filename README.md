@@ -17,11 +17,13 @@ Adjusting the available RAM for the Docker engine to at least 4GB is also requir
 Its main usage includes a container which will make use of the [puppeteer-confluence-setup image at Docker Hub](https://hub.docker.com/repository/docker/aruizca/puppeteer-confluence-setup) to automate also the initial setup process. For more info go to the [puppeteer-confluence-setup GitHub repo](https://github.com/aruizca/puppeteer-confluence-setup).
 
 ```bash
-./scripts/run-confluence-container.sh -v [x.y.z]
+./scripts/run-confluence-container.sh
 
 ```
 
-If you want to perform the setup process manually:
+If you want to perform the setup process manually you could use the next flags:
+
+### Version flag -v
 
 ```bash
 ./scripts/run-confluence-container-no-setup.sh -v [x.y.z]
@@ -31,15 +33,34 @@ If you want to perform the setup process manually:
 
 Otherwise, the default version that appears on the .env file will be used.
 
-Besides, you also can add flags for adding an alias to the Container name
+### Alias flag -a
+
+Using -a flag, you can add an alias to your docker container.
 
 ```bash
 ./scripts/run-confluence-container-no-setup.sh -a [alias]
 ```
 
-This way, the container will have the alias set in the flag in its own name.
+This way, the container name will add the alias to the actual container name. 
 
-You also can set the different environment variables configured in .env file by using the "-e" flag.
+So if we run the script without any flag:
+
+```bash
+./scripts/run-confluence-container-no-setup.sh
+```
+The container name will be: 7-9-0--8090
+
+But if you run it with an alias:
+
+```bash
+./scripts/run-confluence-container-no-setup.sh -a aliasName
+```
+
+The container name will be: 7-9-0--8090--aliasName
+
+### Environment variables flag -e
+
+You also can set your own environment variables by using the "-e" flag.
 
 ```bash
 ./scripts/run-confluence-container-no-setup.sh -e "ENV=VALUE ENV2=VALUE"
@@ -48,25 +69,47 @@ You also can set the different environment variables configured in .env file by 
 This way the environment variables passed in the flag will override the actual ones and will be used in the script.
 Note that if you want to set more than one environment variable, you will have to write them within the "" quotes.
 
+
+## Default Confluence Build
 The docker container will be generated using the ports showed below.
 
-| PORT TYPE             |      |      |     |     |     |     |
+| ENV_VARIABLE          |      |      |     |     |     |     |
 |-----------------------|------|:----:|-----|-----|-----|-----|
 | CONFLUENCE_PORTS_LIST | 8090 | 9010 |  9020   |   9030  |   9040  |    9050 |
 | LDAP_PORTS_LIST       | 388  | 389  |  387   |  386   |  385   |   384  |
 | POSTGRES_PORTS_LIST   | 5543 | 5432 |   5654  |  5765   |   5876  |  5987   |
 | DEBUG_PORTS_LIST      | 5007 | 5006 |  5008   |  5009   |  5010   | 5011    |
 
-For each Confluence instance we try to start up, it will check if the port is being used, if so, it will use the next one according to the PORT TYPE table.
+For each Confluence instance we try to start up, it will check if the port is being used, if so, it will use the next one according to the table.
 
 This way, the first Confluence instance we create will be listening on <http://localhost:8090/confluence>, the second one <http://localhost:9010/confluence> and so on.
 
-If you prefer using your own port lists, you can set in your environment variables with the same name but separating the ports with ","; for example:
+If you prefer using your own port lists, you can set them in your environment variables separating the ports with "," for example:
 
 ```bash 
 export CONFLUENCE_PORTS_LIST=7980,7970,7960,7950,7940,7930
 ```
 
+or pass the value in the -e flag:
+
+```bash 
+./scripts/run-confluence-container-no-setup.sh -e  CONFLUENCE_PORTS_LIST=7980,7970,7960,7950,7940,7930
+```
+
+## Confluence Volume
+
+This script will also create a volume connected to the home path of the conflunce server in your machine to easily access the data of the server.
+This way you can open the files using your favorite text editor.
+
+The path of the directory is allocated in the same path of the project, but it can be modified by changing the "VOLUME_PATH" environment variable.
+
+eg:
+
+```bash
+./scripts/run-confluence-container-no-setup.sh -v 7.20.0 -a volumeContainer
+```
+
+The created folder will have the next name: 7-20-0--9010--volumeContainer
 
 ## Additional settings
 
@@ -208,21 +251,6 @@ Most companies use an external directory services to manage users authentication
 A container using this image will be run along with Confluence and available if needed.
 
 That repo contains also the setting to configure it inside Confluence.
-
-## Running isolated confluence versions with its own database
-
-Docker compose allows to run the same docker services defined in a compose file in different isolated layers: https://docs.docker.com/compose/#multiple-isolated-environments-on-a-single-host
-
-This way, we can start up a confluence version (ie: 7.15.0) with postgres 9.6, configure with desired data, stop containers and then start up another confluence version, ie 7.13.2 with its own postgres 9.6. Each container have a different name and data will be stored separately from each other. In order to be used, the ISOLATED parameter has to be set. Otherwise, the containers will be replaced. Examples steps:
-- run `./scripts/run-confluence-container-no-setup.sh 7.15.0`
-- configure everything on localhost:8090
-- stop all 7.15.0 containers: `./scripts/stop-confluence.sh 7.15.0`
-- run another confluence: `./scripts/run-confluence-container-no-setup.sh 7.13.2`
-- configure everything on localhost:8090
-
-Now you can switch between one confluence keeping its data isolated.
-
-NOTE: Running different version of confluence/databases at the same time is (still) not supported. Some changes regarding port binding is required.
 
 ## Troubleshooting
 

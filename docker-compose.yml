@@ -22,6 +22,9 @@ services:
       - ldap
     networks:
       - confluence-net
+    volumes:
+      - ${VOLUME_PATH}${PACKAGE_NAME}:/var/atlassian/application-data/confluence
+
 
   postgres:
     image: postgres:${POSTGRESQL_VERSION}
