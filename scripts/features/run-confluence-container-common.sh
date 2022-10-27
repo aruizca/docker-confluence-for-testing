@@ -144,7 +144,6 @@ while read p; do
       echo "Using VOLUME_PATH environment variable with value: '${VOLUME_PATH}'"
       export "VOLUME_PATH=${VOLUME_PATH}"
   else
-    echo "Setting environment variable from .env file: ${p}"
     export ${p}
   fi
 done <.env
@@ -198,12 +197,14 @@ if [[ ! -z "${alias}" ]];
     export "PACKAGE_NAME"="${CONFLUENCE_VERSION//./-}--${CONFLUENCE_PORT}"
 fi
 
+echo "  "
 echo "Container name = ${PACKAGE_NAME}"
 echo "  "
-echo "running server in http://localhost:${CONFLUENCE_PORT}/confluence"
+echo "running server in $(tput setaf 2)http://localhost:${CONFLUENCE_PORT}/confluence"
+echo "  "
 
 
-echo "Starting Confluence version $CONFLUENCE_VERSION"
+echo "$(tput setaf 4)Starting Confluence version $CONFLUENCE_VERSION"
 echo "---------------------------------"
 
 
