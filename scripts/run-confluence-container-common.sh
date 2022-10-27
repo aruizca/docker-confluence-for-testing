@@ -96,6 +96,29 @@ while getopts 'a:v:e:h:' OPTION; do
 done
 shift "$(($OPTIND -1))"
 
+confluencePorts=$(getConfluencePorts)
+ldapPorts=($(getLdapPorts))
+postgresPorts=($(getPostgresPorts))
+debugPorts=($(getDebugPorts))
+
+## Checks for all confluence docker containers ports to delete them from confluencePorts list
+dockerContainers=$(docker ps -a --format '{{.Names}}')
+
+for container in $dockerContainers
+do
+
+  if [[ $container == *"confluence_"* ]]; then
+    ## As container name is 'confluence_X.Y.Z--PORT, we trim after the first encounter of '--'
+    untrimmedPort=${container#*--}
+    ## Taking only the first 4 characters that matches the port
+    trimmedPort=${untrimmedPort:0:4}
+    ## deletes Docker used port from confluencePorts list
+    confluencePorts=( "${confluencePorts[@]/$trimmedPort}" )
+  fi
+done
+
+
+
 
 # Set current folder to parent
 cd "$(dirname "$0")"/..
@@ -105,11 +128,6 @@ set -o allexport
 [[ -f .env ]] && source .env
 set +o allexport
 
-
-confluencePorts=$(getConfluencePorts)
-ldapPorts=($(getLdapPorts))
-postgresPorts=($(getPostgresPorts))
-debugPorts=($(getDebugPorts))
 
 iterator=0
 for confluencePort in $confluencePorts
