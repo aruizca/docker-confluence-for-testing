@@ -111,19 +111,8 @@ eg:
 
 The created folder will have the next name: 7-20-0--9010--volumeContainer
 
-## Additional settings
 
-```bash
-./scripts/run-confluence-container.sh -v [x.y.z] -e "ENV=VALUE ENV2=VALUE"
-```
-
-⚠️ Note that it is recommended to provided an environment variable with a valid Confluence instance license, otherwise a [3 hours timebomb license provided by Atlassian](https://developer.atlassian.com/platform/marketplace/timebomb-licenses-for-testing-server-apps/) will be used. Example:
-
-```bash
-PPTR_CONFLUENCE_LICENSE=...
-```
-
-### Other useful scripts
+## Other useful scripts
 
 - `install-app.sh`: script to install an app via URL or file path. `install-app.sh -h` for details.
 

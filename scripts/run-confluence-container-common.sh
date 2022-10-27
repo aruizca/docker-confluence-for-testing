@@ -20,6 +20,7 @@ function usage {
 }
 ##
 function getConfluencePorts() {
+  # if you have ports lists set in your env variable uses those ports
   if [[ ! -z "${CONFLUENCE_PORTS_LIST}" ]]; then
       confluencePorts=($(echo ${CONFLUENCE_PORTS_LIST} | tr "," "\n"))
       echo ${confluencePorts[*]}
@@ -30,6 +31,7 @@ function getConfluencePorts() {
 }
 
 function getLdapPorts() {
+  # if you have ports lists set in your env variable uses those ports
   if [[ ! -z "${LDAP_PORTS_LIST}" ]]; then
       ldapPorts=($(echo ${LDAP_PORTS_LIST} | tr "," "\n"))
       echo ${ldapPorts[*]}
@@ -40,6 +42,7 @@ function getLdapPorts() {
 }
 
 function getPostgresPorts() {
+  # if you have ports lists set in your env variable uses those ports
   if [[ ! -z "${POSTGRES_PORTS_LIST}" ]]; then
       postgresPorts=($(echo ${POSTGRES_PORTS_LIST} | tr "," "\n"))
       echo ${postgresPorts[*]}
@@ -50,6 +53,7 @@ function getPostgresPorts() {
 }
 
 function getDebugPorts() {
+  # if you have ports lists set in your env variable uses those ports
   if [[ ! -z "${DEBUG_PORTS_LIST}" ]]; then
       debugPorts=($(echo ${DEBUG_PORTS_LIST} | tr "," "\n"))
       echo ${debugPorts[*]}
@@ -61,8 +65,8 @@ function getDebugPorts() {
 
 ## TODO oraclePorts, oracleListenerPorts, mysqlPorts, sqlServerPorts
 
+## Creates a list of used docker confluence ports
 function getDockerUsedPorts() {
-  ## Creates a list of used docker confluence ports
   dockerContainers=$(docker ps -a --format '{{.Names}}')
 
   for container in $dockerContainers
@@ -116,10 +120,12 @@ while getopts 'a:v:e:h:' OPTION; do
 done
 shift "$(($OPTIND -1))"
 
+## load all ports lists
 confluencePorts=$(getConfluencePorts)
 ldapPorts=($(getLdapPorts))
 postgresPorts=($(getPostgresPorts))
 debugPorts=($(getDebugPorts))
+## get list of ports used by Docker
 dockerConfluencePorts=($(getDockerUsedPorts))
 
 
@@ -127,9 +133,22 @@ dockerConfluencePorts=($(getDockerUsedPorts))
 cd "$(dirname "$0")"/..
 
 #load default env varibles
-set -o allexport
-[[ -f .env ]] && source .env
-set +o allexport
+while read p; do
+  variable=${p%=*}
+
+  # skips all lines with '#' at the beginning
+  [[ $p = \#* ]] && continue
+
+  # checks if the user has VOLUME_PATH environment variable already set
+  if [[ ${p} == *"VOLUME_PATH"* && ! -z "${VOLUME_PATH}" ]]; then
+      echo "Using VOLUME_PATH environment variable with value: '${VOLUME_PATH}'"
+      export "VOLUME_PATH=${VOLUME_PATH}"
+  else
+    echo "Setting environment variable from .env file: ${p}"
+    export ${p}
+  fi
+done <.env
+
 
 
 iterator=0
@@ -145,7 +164,6 @@ do
       # Checks if the free confluence port is not being used by Docker
       if [[ ! " ${dockerConfluencePorts[*]} " =~ " ${confluencePort} " ]]
        then
-          echo "SE ENCONTRÓ PUERTO = ${confluencePort}"
           export "CONFLUENCE_PORT=${confluencePort}"
           # confluence syncrony port value is the same as confluence port +2
           confluenceSynchronyPort=`expr ${confluencePort} + 2`
