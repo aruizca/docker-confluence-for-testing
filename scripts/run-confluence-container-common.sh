@@ -61,6 +61,26 @@ function getDebugPorts() {
 
 ## TODO oraclePorts, oracleListenerPorts, mysqlPorts, sqlServerPorts
 
+function getDockerUsedPorts() {
+  ## Creates a list of used docker confluence ports
+  dockerContainers=$(docker ps -a --format '{{.Names}}')
+
+  for container in $dockerContainers
+  do
+
+    if [[ $container == *"confluence_"* ]]; then
+      ## As container name is 'confluence_X.Y.Z--PORT, we trim after the first encounter of '--'
+      untrimmedPort=${container#*--}
+      ## Taking only the first 4 characters that matches the port
+      trimmedPort=${untrimmedPort:0:4}
+
+      dockerConfluencePorts=(${dockerConfluencePorts[@]} ${trimmedPort})
+
+    fi
+  done
+  echo ${dockerConfluencePorts[*]}
+}
+
 ## Processes all flags available in this scripts
 while getopts 'a:v:e:h:' OPTION; do
   echo "option = ${OPTION}"
@@ -100,24 +120,7 @@ confluencePorts=$(getConfluencePorts)
 ldapPorts=($(getLdapPorts))
 postgresPorts=($(getPostgresPorts))
 debugPorts=($(getDebugPorts))
-
-## Checks for all confluence docker containers ports to delete them from confluencePorts list
-dockerContainers=$(docker ps -a --format '{{.Names}}')
-
-for container in $dockerContainers
-do
-
-  if [[ $container == *"confluence_"* ]]; then
-    ## As container name is 'confluence_X.Y.Z--PORT, we trim after the first encounter of '--'
-    untrimmedPort=${container#*--}
-    ## Taking only the first 4 characters that matches the port
-    trimmedPort=${untrimmedPort:0:4}
-    ## deletes Docker used port from confluencePorts list
-    confluencePorts=( "${confluencePorts[@]/$trimmedPort}" )
-  fi
-done
-
-
+dockerConfluencePorts=($(getDockerUsedPorts))
 
 
 # Set current folder to parent
@@ -132,23 +135,30 @@ set +o allexport
 iterator=0
 for confluencePort in $confluencePorts
 do
-  echo "Trying to raise the server up in port -> ${confluencePort}"
 
+  # Check if confluencePort is available in TCP ports
   SERVER=localhost PORT=${confluencePort}
   if (: < /dev/tcp/$SERVER/$PORT) 2>/dev/null
   then # Port already used
     echo "port ${confluencePort} already in use, trying another one"
-  else # Free port
-    export "CONFLUENCE_PORT=${confluencePort}"
-    # confluence syncrony port value is the same as confluence port +2
-    confluenceSynchronyPort=`expr ${confluencePort} + 2`
-    export "CONFLUENCE_SYNCHRONY_PORT=${confluenceSynchronyPort}"
-    # taking the value of the array corresponding to the same position as the confluence port list at this time
-    export "LDAP_PORT=${ldapPorts[${iterator}]}"
-    export "POSTGRES_PORT=${postgresPorts[${iterator}]}"
-    export "DEBUG_PORT=${debugPorts[${iterator}]}"
-    # TODO oraclePorts, oracleListenerPorts, mysqlPorts, sqlServerPorts exports
-    break
+  else # Free port in TCP
+      # Checks if the free confluence port is not being used by Docker
+      if [[ ! " ${dockerConfluencePorts[*]} " =~ " ${confluencePort} " ]]
+       then
+          echo "SE ENCONTRÓ PUERTO = ${confluencePort}"
+          export "CONFLUENCE_PORT=${confluencePort}"
+          # confluence syncrony port value is the same as confluence port +2
+          confluenceSynchronyPort=`expr ${confluencePort} + 2`
+          export "CONFLUENCE_SYNCHRONY_PORT=${confluenceSynchronyPort}"
+          # taking the value of the array corresponding to the same position as the confluence port list at this time
+          export "LDAP_PORT=${ldapPorts[${iterator}]}"
+          export "POSTGRES_PORT=${postgresPorts[${iterator}]}"
+          export "DEBUG_PORT=${debugPorts[${iterator}]}"
+          # TODO oraclePorts, oracleListenerPorts, mysqlPorts, sqlServerPorts exports
+          break
+        else
+           echo "port ${confluencePort} already in use, trying another one"
+      fi
   fi
   iterator=`expr ${iterator} + 1`
 done
