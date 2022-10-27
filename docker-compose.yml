@@ -82,7 +82,12 @@ services:
     container_name: puppeteer-confluence-setup_${PACKAGE_NAME}
     hostname: puppeteer
     environment:
-      - PPTR_LDAP_CONFIG=false
+      - PPTR_HEADLESS=true
+      - PPTR_CONFLUENCE_BASE_URL=http://confluence:8090/confluence
+      - PPTR_JDBC_URL=jdbc:postgresql://postgres:5432/confluence
+      - PPTR_LDAP_PORT=389
+      - PPTR_LDAP_CONFIG=true
+      - PPTR_CONFLUENCE_LICENSE=${PPTR_CONFLUENCE_LICENSE}
     volumes:
       - "./screenshots:/app/screenshots"
     depends_on:
