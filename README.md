@@ -12,40 +12,110 @@ The only requirement is to have [Docker installed](https://www.docker.com/produc
 
 Adjusting the available RAM for the Docker engine to at least 4GB is also required. You can find the settings in Docker -> Preferences -> Advanced.
 
+## Before starting
+##⚠️ <span style="color:Orange"> Important! Rename the ".env.sample" file to ".env" in which all the default values for the used environment variables are set.</span>
+
 ## Usage
 
 Its main usage includes a container which will make use of the [puppeteer-confluence-setup image at Docker Hub](https://hub.docker.com/repository/docker/aruizca/puppeteer-confluence-setup) to automate also the initial setup process. For more info go to the [puppeteer-confluence-setup GitHub repo](https://github.com/aruizca/puppeteer-confluence-setup).
 
 ```bash
-./scripts/run-confluence-container.sh [x.y.z]
+./scripts/run-confluence-container.sh
 
 ```
 
-If you want to perform the setup process manually:
+If you want to perform the setup process manually you could use the next flags:
+
+### Version flag -v
 
 ```bash
-./scripts/run-confluence-container-no-setup.sh [x.y.z]
+./scripts/run-confluence-container-no-setup.sh -v [x.y.z]
 ```
 
-x.y.z is an optional parameter with the Confluence version number you want to run.
+-v [x.y.z] is an optional flag that follows with the Confluence version number you want to run.
 
-Otherwise the default version that appears on the .env file will be used.
+Otherwise, the default version that appears on the .env file will be used.
 
-Confluence instance will be listening on <http://localhost:8090/confluence>
+### Alias flag -a
 
-## Additional settings
+Using -a flag, you can add an alias to your docker container.
 
 ```bash
-./scripts/run-confluence-container.sh [x.y.z] [ENV=VALUE ENV2=VALUE]
+./scripts/run-confluence-container-no-setup.sh -a [alias]
 ```
 
-⚠️ Note that it is recommended to provided an environment variable with a valid Confluence instance license, otherwise a [3 hours timebomb license provided by Atlassian](https://developer.atlassian.com/platform/marketplace/timebomb-licenses-for-testing-server-apps/) will be used. Example:
+This way, the container name will add the alias to the actual container name. 
+
+So if we run the script without any flag:
 
 ```bash
-PPTR_CONFLUENCE_LICENSE=...
+./scripts/run-confluence-container-no-setup.sh
+```
+The container name will be: 7-9-0--8090
+
+But if you run it with an alias:
+
+```bash
+./scripts/run-confluence-container-no-setup.sh -a aliasName
 ```
 
-### Other useful scripts
+The container name will be: 7-9-0--8090--aliasName
+
+### Environment variables flag -e
+
+You also can set your own environment variables by using the "-e" flag.
+
+```bash
+./scripts/run-confluence-container-no-setup.sh -e "ENV=VALUE ENV2=VALUE"
+```
+
+This way the environment variables passed in the flag will override the actual ones and will be used in the script.
+Note that if you want to set more than one environment variable, you will have to write them within the "" quotes.
+
+
+## Default Confluence Build
+The docker container will be generated using the ports showed below.
+
+| ENV_VARIABLE          |      |      |     |     |     |     |
+|-----------------------|------|:----:|-----|-----|-----|-----|
+| CONFLUENCE_PORTS_LIST | 8090 | 9010 |  9020   |   9030  |   9040  |    9050 |
+| LDAP_PORTS_LIST       | 388  | 389  |  387   |  386   |  385   |   384  |
+| POSTGRES_PORTS_LIST   | 5543 | 5432 |   5654  |  5765   |   5876  |  5987   |
+| DEBUG_PORTS_LIST      | 5007 | 5006 |  5008   |  5009   |  5010   | 5011    |
+
+For each Confluence instance we try to start up, it will check if the port is being used, if so, it will use the next one according to the table.
+
+This way, the first Confluence instance we create will be listening on <http://localhost:8090/confluence>, the second one <http://localhost:9010/confluence> and so on.
+
+If you prefer using your own port lists, you can set them in your environment variables separating the ports with "," for example:
+
+```bash 
+export CONFLUENCE_PORTS_LIST=7980,7970,7960,7950,7940,7930
+```
+
+or pass the value in the -e flag:
+
+```bash 
+./scripts/run-confluence-container-no-setup.sh -e  CONFLUENCE_PORTS_LIST=7980,7970,7960,7950,7940,7930
+```
+
+## Confluence Volume
+
+This script will also create a volume connected to the home path of the conflunce server in your machine to easily access the data of the server.
+This way you can open the files using your favorite text editor.
+
+The path of the directory is allocated in the same path of the project, but it can be modified by changing the "VOLUME_PATH" environment variable.
+
+eg:
+
+```bash
+./scripts/run-confluence-container-no-setup.sh -v 7.20.0 -a volumeContainer
+```
+
+The created folder will have the next name: 7-20-0--9010--volumeContainer
+
+
+## Other useful scripts
 
 - `install-app.sh`: script to install an app via URL or file path. `install-app.sh -h` for details.
 
@@ -65,7 +135,7 @@ If no JAVA_VERSION is set, by default, version to be installed is: `zulu@1.8.232
 For example , to run a container with confluece 5.4.4 (which need java 7) and the zulu 1.7.95 version (which is supportorted by JABBA):
 
 ```bash
-./scripts/run-confluence-container.sh 5.4.4 JAVA_VERSION=zulu@1.7.95
+./scripts/run-confluence-container.sh -v 5.4.4 -e JAVA_VERSION=zulu@1.7.95
 ```
 
 You can check available vendor/version
@@ -106,7 +176,7 @@ sqlserver
 For example to run the oracle database jsut do the following:
 
 ```bash
-./scripts/run-confluence-container.sh [x.y.z] DATABASE=oracle
+./scripts/run-confluence-container.sh -v [x.y.z] -e DATABASE=oracle
 ```
 
 ## Debugging port
@@ -153,7 +223,7 @@ By default a container named "postgres" is up using version 9.6, which seems to 
 You can change the default PostgreSQL version (9.6) by adding the environment variable `POSTGRESQL_VERSION`. Eg:
 
 ```bash
-./scripts/run-confluence-container.sh 6.15.1 POSTGRESQL_VERSION=10.2
+./scripts/run-confluence-container.sh -v 6.15.1 -e POSTGRESQL_VERSION=10.2
 ```
 
 You can use any of the versions available in [the official PostgreSQL Docker repository](https://hub.docker.com/_/postgres)
@@ -163,8 +233,8 @@ You can use any of the versions available in [the official PostgreSQL Docker rep
 #### DB recommended version
 | Confluence Version | PostgreSQL version |
 |--------------------|:------------------:|
-| 5.8.x - 5.10.x     |        9.5         |
-| 6.0.x - ...        |        9.6         |
+| 7.9.0 - 7.20.0     |        9.6         |
+      |
 
 ## External user directory
 

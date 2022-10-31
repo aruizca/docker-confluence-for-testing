@@ -27,7 +27,7 @@ EXPOSE 8090 8091 5005
 WORKDIR $CONFLUENCE_HOME
 
 RUN mkdir scripts
-COPY scripts/entrypoint.sh /scripts/entrypoint.sh
+COPY scripts/features/entrypoint.sh /scripts/features/entrypoint.sh
 
 # Download required Confluence version
 RUN [ -n "${CONFLUENCE_VERSION}" ] || export CONFLUENCE_VERSION=$(curl -s https://marketplace.atlassian.com/rest/2/applications/confluence/versions/latest | jq -r '.version') \
@@ -40,4 +40,4 @@ RUN sed -i -e 's/-Xms\([0-9]\+[kmg]\) -Xmx\([0-9]\+[kmg]\)/-Xms\${JVM_MINIMUM_ME
     && sed -i -e 's/<Context path=""/<Context path="\/confluence"/g' ${CONFLUENCE_INSTALL_DIR}/conf/server.xml \
     && sed -i -e 's/\${confluence.context.path}/\/confluence/g' ${CONFLUENCE_INSTALL_DIR}/conf/server.xml
 
-CMD ["/scripts/entrypoint.sh", "-fg"]
+CMD ["/scripts/features/entrypoint.sh", "-fg"]
