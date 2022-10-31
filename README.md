@@ -12,6 +12,9 @@ The only requirement is to have [Docker installed](https://www.docker.com/produc
 
 Adjusting the available RAM for the Docker engine to at least 4GB is also required. You can find the settings in Docker -> Preferences -> Advanced.
 
+## Before starting
+##⚠️ <span style="color:Orange"> Important! Rename the ".env.sample" file to ".env" in which all the default values for the used environment variables are set.</span>
+
 ## Usage
 
 Its main usage includes a container which will make use of the [puppeteer-confluence-setup image at Docker Hub](https://hub.docker.com/repository/docker/aruizca/puppeteer-confluence-setup) to automate also the initial setup process. For more info go to the [puppeteer-confluence-setup GitHub repo](https://github.com/aruizca/puppeteer-confluence-setup).

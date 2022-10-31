@@ -132,19 +132,16 @@ dockerConfluencePorts=($(getDockerUsedPorts))
 # Set current folder to parent
 cd "$(dirname "$0")"/..
 
-#load default env varibles
-while read p; do
-  variable=${p%=*}
-
+#load default env varibles from .env file
+while read envLine; do
   # skips all lines with '#' at the beginning
-  [[ $p = \#* ]] && continue
+  [[ $envLine = \#* ]] && continue
 
   # checks if the user has VOLUME_PATH environment variable already set
-  if [[ ${p} == *"VOLUME_PATH"* && ! -z "${VOLUME_PATH}" ]]; then
+  if [[ ${envLine} == *"VOLUME_PATH"* && ! -z "${VOLUME_PATH}" ]]; then
       echo "Using VOLUME_PATH environment variable with value: '${VOLUME_PATH}'"
-      export "VOLUME_PATH=${VOLUME_PATH}"
   else
-    export ${p}
+    export ${envLine}
   fi
 done <.env
 
