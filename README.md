@@ -123,6 +123,38 @@ The created folder will have the next name: 7-20-0--9010--volumeContainer
 
 - `full-app-setup-example.sh`: this example shows the full cycle of installing Confluence, set it up, install an app, and add a license. This is useful to prepare the environment to execute e2e tests.
 
+## Zenity based GUI script
+### Description
+In order to ease starting Confluence instances to users that are not familiar with the command line and are not familiar with the different available options to run the Confluence instance, there is a script that has a Graphic User Interface (GUI) guiding the user through them.
+
+Once the selection of the options through the graphic interface is completed, then the right script with the right parameters will be run automatically.
+
+### Requirements
+This script was tested using [this custom Zenity implementation](https://github.com/ncruces/zenity) as a dependency. You can obtain the `zenity` command to make this script work, as follows:
+
+On macOS/WSL using [Homebrew](https://brew.sh/) 🍺:
+
+    brew install ncruces/tap/zenity
+
+On Windows using [Scoop](https://scoop.sh/) 🍨:
+
+    scoop install https://ncruces.github.io/scoop/zenity.json
+
+### How to run it
+This script can be run normally by running the following in a command console:
+
+      ./scripts/confluence-setup-app.sh 
+
+Or if you are in macOS you could simply rename `confluence-setup-app.sh` to `confluence-setup-app.command` which is an executable you can double-click on from your desktop.
+
+Both options will prompt a window where you can start selecting the different options you wish your Confluence instance to have.
+
+### Zenity Documentation
+If you wish to know more about how this script with Zenity works and modify it to suit your needs, here you have some of the documentation used:
+
+- https://manpages.ubuntu.com/manpages/trusty/man1/zenity.1.html
+
+- https://help.gnome.org/users/zenity/stable/index.html.en
 
 ## Java JDK
 
