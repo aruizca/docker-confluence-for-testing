@@ -87,7 +87,6 @@ function getDockerUsedPorts() {
 
 ## Processes all flags available in this scripts
 while getopts 'a:v:e:h:' OPTION; do
-  echo "option = ${OPTION}"
   case "$OPTION" in
     a)
       alias="$OPTARG"
@@ -106,7 +105,7 @@ while getopts 'a:v:e:h:' OPTION; do
       ;;
     e)
         set -f # disable glob
-        IFS=' ' # split on commas
+        IFS=' ' # split on spaces
         env_variables=($OPTARG) ;; # use the split+glob operator
     h)
         usage
@@ -126,7 +125,7 @@ ldapPorts=($(getLdapPorts))
 postgresPorts=($(getPostgresPorts))
 debugPorts=($(getDebugPorts))
 ## get list of ports used by Docker
-dockerConfluencePorts=($(getDockerUsedPorts))
+dockerConfluencePorts=$(getDockerUsedPorts)
 
 
 # Set current folder to parent
