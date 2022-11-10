@@ -78,10 +78,12 @@ The docker container will be generated using the ports showed below.
 
 | ENV_VARIABLE          |      |      |     |     |     |     |
 |-----------------------|------|:----:|-----|-----|-----|-----|
-| CONFLUENCE_PORTS_LIST | 8090 | 9010 |  9020   |   9030  |   9040  |    9050 |
-| LDAP_PORTS_LIST       | 388  | 389  |  387   |  386   |  385   |   384  |
-| POSTGRES_PORTS_LIST   | 5543 | 5432 |   5654  |  5765   |   5876  |  5987   |
-| DEBUG_PORTS_LIST      | 5007 | 5006 |  5008   |  5009   |  5010   | 5011    |
+| CONFLUENCE_PORTS_LIST | 8090 | 9010 | 9020| 9030| 9040| 9050|
+| LDAP_PORTS_LIST       | 388  | 389  | 387 | 386 | 385 | 384 |
+| POSTGRES_PORTS_LIST   | 5543 | 5432 | 5654| 5765| 5876| 5987|
+| DEBUG_PORTS_LIST      | 5007 | 5006 | 5008| 5009| 5010| 5011|
+| MAILSERVER_PORTS_LIST | 8025 | 8026 | 8027| 8028| 8029| 8030|
+
 
 For each Confluence instance we try to start up, it will check if the port is being used, if so, it will use the next one according to the table.
 

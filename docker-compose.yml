@@ -95,6 +95,19 @@ services:
     networks:
       - confluence-net
 
+  mailserver:
+    container_name: mailserver
+    hostname: mailserver
+    image: mailhog/mailhog
+    logging:
+      driver: none
+    depends_on:
+      - confluence
+    networks:
+      - confluence-net
+    ports:
+      - "${MAILSERVER_PORT}:8025"
+
 networks:
   confluence-net:
     driver: bridge
